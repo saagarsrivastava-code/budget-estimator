@@ -1,14 +1,12 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 
-import UploadEntry from './screens/UploadEntry.jsx'
-import ParsedPreview from './screens/ParsedPreview.jsx'
+import Landing from './screens/Landing.jsx'
+import Ideas from './screens/Ideas.jsx'
 import Questions from './screens/Questions.jsx'
-import Scoring from './screens/Scoring.jsx'
-import ScoreOverview from './screens/ScoreOverview.jsx'
-import Suggestions from './screens/Suggestions.jsx'
-import SuggestionDetail from './screens/SuggestionDetail.jsx'
-import UpdatedItinerary from './screens/UpdatedItinerary.jsx'
+import Planning from './screens/Planning.jsx'
+import ItineraryReady from './screens/ItineraryReady.jsx'
+import Trip from './screens/Trip.jsx'
 
 export default function App() {
   const location = useLocation()
@@ -17,15 +15,13 @@ export default function App() {
     <div className="app">
       <AnimatePresence mode="wait" initial={false}>
         <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<UploadEntry />} />
-          <Route path="/preview" element={<ParsedPreview />} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/ideas" element={<Ideas />} />
           <Route path="/questions" element={<Questions />} />
-          <Route path="/scoring" element={<Scoring />} />
-          <Route path="/score" element={<ScoreOverview />} />
-          <Route path="/suggestions" element={<Suggestions />} />
-          <Route path="/suggestions/:id" element={<SuggestionDetail />} />
-          <Route path="/updated" element={<UpdatedItinerary />} />
-          <Route path="*" element={<UploadEntry />} />
+          <Route path="/planning" element={<Planning />} />
+          <Route path="/ready" element={<ItineraryReady />} />
+          <Route path="/trip" element={<Trip />} />
+          <Route path="*" element={<Landing />} />
         </Routes>
       </AnimatePresence>
     </div>

@@ -1,49 +1,36 @@
 import { createContext, useContext, useMemo, useState, useCallback } from 'react'
-import { SCORE } from '../data/trip.js'
 
 const FlowContext = createContext(null)
 
 export function FlowProvider({ children }) {
-  // Questionnaire answers
+  // Free-text ideas + which sources were attached on the ideas screen
+  const [ideas, setIdeas] = useState('')
+  const [sources, setSources] = useState([]) // keys from UPLOAD_TILES
+
+  // Questionnaire answers (5 steps)
   const [answers, setAnswers] = useState({
     party: 'Partner',
-    pace: 3,
-    interests: ['Food & dining', 'Hidden gems'],
+    duration: '4–6 days',
+    month: 'December',
+    pace: 50,                              // 0 more free time … 100 packed
+    vibes: ['Food & dining', 'Hidden gems'],
     budget: 'Mid-range',
-    flexibility: 'Mostly set',
+    food: 'No preference',
+    notes: '',
   })
+  const setAnswer = useCallback((key, value) => setAnswers((a) => ({ ...a, [key]: value })), [])
 
-  // Which suggestion ids have been accepted/applied to the itinerary
-  const [applied, setApplied] = useState([]) // [{id, scoreDelta}]
-
-  // Upload source label, used on preview ("paris-trip.pdf" / "Pasted text")
-  const [source, setSource] = useState('paris-trip.pdf')
-
-  const applySuggestion = useCallback((s) => {
-    setApplied((prev) => (prev.find((a) => a.id === s.id) ? prev : [...prev, { id: s.id, scoreDelta: s.scoreDelta }]))
-  }, [])
-
-  const isApplied = useCallback((id) => applied.some((a) => a.id === id), [applied])
-
-  const baseScore = SCORE.value
-  const newScore = useMemo(
-    () => Math.min(100, baseScore + applied.reduce((sum, a) => sum + a.scoreDelta, 0)),
-    [applied],
-  )
-
-  const reset = useCallback(() => {
-    setApplied([])
+  const toggleSource = useCallback((key) => {
+    setSources((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]))
   }, [])
 
   const value = useMemo(
     () => ({
-      answers, setAnswers,
-      applied, applySuggestion, isApplied,
-      source, setSource,
-      baseScore, newScore,
-      reset,
+      ideas, setIdeas,
+      sources, toggleSource,
+      answers, setAnswer,
     }),
-    [answers, applied, applySuggestion, isApplied, source, newScore, reset],
+    [ideas, sources, toggleSource, answers, setAnswer],
   )
 
   return <FlowContext.Provider value={value}>{children}</FlowContext.Provider>

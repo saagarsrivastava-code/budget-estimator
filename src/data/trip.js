@@ -1,17 +1,7 @@
-// Dummy data for the prototype — Paris, 5 days. Values mirror the wireframes.
+// Dummy data for the prototype — Phuket & Krabi, Thailand, 5 days.
 // Photos: Unsplash CDN (keyless, ?w=… sized). Swap for licensed assets before release.
 
 const IMG = (id, w = 800) => `https://images.unsplash.com/photo-${id}?w=${w}&q=80&auto=format&fit=crop`
-
-export const IMAGES = {
-  museeOrsay:  IMG('1565099824688-e93eb20fe622'),
-  leftBank:    IMG('1522093007474-d86e9bf7ba6f'),
-  bistro:      IMG('1414235077428-338989a2e8c0'),
-  louvre:      IMG('1431274172761-fca41d930114'),
-  hotel:       IMG('1551882547-ff40c63fe5fa'),
-  sacreCoeur:  IMG('1550340499-a6c60fc8287c'),
-  mapSnippet:  IMG('1473951574080-01fe45ec8643'),
-}
 
 export const CATEGORIES = {
   food:      { label: 'Food',      color: 'var(--cat-food)' },
@@ -21,235 +11,137 @@ export const CATEGORIES = {
   transport: { label: 'Transport', color: 'var(--cat-transport)' },
 }
 
-// Parsed itinerary (Screen 3). `id` lets suggestions target a stop.
+// The expert-built itinerary shown on the trip screen.
 export const TRIP = {
-  destination: 'Paris',
+  destination: 'Thailand',
+  title: 'Your trip to Thailand',
   durationDays: 5,
-  dateRange: 'Mon 14 – Fri 18 Apr',
+  dateRange: 'Mon 14 – Fri 18 Dec',
+  price: '₹50,000',
   days: [
     {
-      label: 'Day 1 — Paris',
-      date: 'Mon 14 Apr',
+      label: 'Day 1 — Phuket',
+      date: 'Mon 14 Dec',
       stops: [
-        { id: 's1', time: '09:30', name: 'Louvre Museum', category: 'culture', transitAfter: { mode: 'Walk', mins: 12 } },
-        { id: 's2', time: '13:00', name: 'Café de Flore', category: 'food', transitAfter: { mode: 'Metro', mins: 18 } },
-        { id: 's3', time: null, name: 'Hôtel Le Marais', category: 'stay' },
+        { id: 's1', time: '09:30', name: 'Big Buddha Phuket', category: 'culture', transitAfter: { mode: 'walk', mins: 13 } },
+        { id: 's2', time: '13:00', name: 'Blue Elephant Restaurant', category: 'food', transitAfter: { mode: 'car', mins: 18 } },
+        { id: 's3', time: null, name: 'Kata Beach Resort & Spa', category: 'stay' },
       ],
     },
     {
-      label: 'Day 2 — Paris',
-      date: 'Tue 15 Apr',
+      label: 'Day 2 — Phuket',
+      date: 'Tue 15 Dec',
       stops: [
-        { id: 's4', time: '09:00', name: 'Eiffel Tower', category: 'culture', transitAfter: { mode: 'Walk', mins: 9 } },
-        { id: 's5', time: '13:30', name: 'Musée Grévin', category: 'culture', transitAfter: { mode: 'Metro', mins: 22 } },
-        { id: 's6', time: '19:30', name: 'Le Comptoir', category: 'food' },
+        { id: 's4', time: '09:00', name: 'Phi Phi Islands Day Tour', category: 'nature', transitAfter: { mode: 'car', mins: 9 } },
+        { id: 's5', time: '13:30', name: 'Wat Chalong', category: 'culture', transitAfter: { mode: 'car', mins: 22 } },
+        { id: 's6', time: '19:30', name: 'Bangla Road Night Market', category: 'food' },
       ],
     },
     {
-      label: 'Day 3 — Paris',
-      date: 'Wed 16 Apr',
+      label: 'Day 3 — Krabi',
+      date: 'Wed 16 Dec',
       stops: [
-        { id: 's7', time: '10:00', name: 'Montmartre Walk', category: 'nature', transitAfter: { mode: 'Walk', mins: 6 } },
-        { id: 's8', time: '15:00', name: 'Sacré-Cœur', category: 'culture' },
+        { id: 's7', time: '10:00', name: 'Railay Beach Viewpoint', category: 'nature', transitAfter: { mode: 'walk', mins: 6 } },
+        { id: 's8', time: '15:00', name: 'Wat Tham Suea (Tiger Cave Temple)', category: 'culture' },
       ],
     },
   ],
 }
 
-export const SCORE = {
-  value: 72,
-  summary:
-    'Well-paced, but the route has significant backtracking. A few swaps could make a big difference.',
-  dimensions: [
-    { label: 'Route efficiency',     pct: 45, band: 'Needs work' },
-    { label: 'Logistics feasibility', pct: 72, band: 'Good' },
-    { label: 'Personalisation fit',  pct: 68, band: 'Good' },
-    { label: 'Experience variety',   pct: 88, band: 'Excellent' },
-    { label: 'Completeness',         pct: 75, band: 'Good' },
-  ],
+// Local travel experts who vet and edit the itinerary.
+// Linh's photo lives at public/linh.png; stock stand-in only if it goes missing.
+export const EXPERT = {
+  name: 'Linh Fa',
+  title: 'Thai traveller with 5 YOE',
+  avatar: '/linh.png',
+}
+export const EXPERT_FALLBACK = IMG('1573496359142-b8d87734a5a2', 200) + '&crop=faces'
+export const EXPERT_FALLBACK_LARGE = IMG('1573496359142-b8d87734a5a2', 600) + '&crop=faces'
+export function onAvatarError(e) {
+  const img = e.currentTarget
+  if (img.src.endsWith('/linh.png')) img.src = img.dataset.fallback || EXPERT_FALLBACK
+}
+export const EXPERTS = [
+  EXPERT,
+  {
+    name: 'Rohit Menon',
+    title: 'Bali & Vietnam expert',
+    avatar: IMG('1507003211169-0a1dd7228f2d', 200) + '&crop=faces',
+  },
+]
+
+// Faces cycled through on the "finding you a local expert" screen.
+export const EXPERT_POOL = [
+  IMG('1507003211169-0a1dd7228f2d', 200) + '&crop=faces',
+  IMG('1438761681033-6461ffad8d80', 200) + '&crop=faces',
+  IMG('1500648767791-00dcc994a43e', 200) + '&crop=faces',
+  IMG('1544005313-94ddf0286df2', 200) + '&crop=faces',
+]
+
+// ── Ideas screen — ways to add what you've planned so far ───────
+export const UPLOAD_TILES = [
+  { key: 'documents', icon: 'doc', label: 'upload documents' },
+  { key: 'images', icon: 'image', label: 'upload images' },
+  { key: 'reels', icon: 'reel', label: 'instagram reels' },
+  { key: 'screenshot', icon: 'screenshot', label: 'screenshot' },
+  { key: 'blogs', icon: 'link', label: 'blog links' },
+  { key: 'video', icon: 'play', label: 'yt video' },
+]
+
+// ── Questionnaire (3 screens: basics, preferences, food & notes) ─
+export const QUESTIONS_TOTAL = 3
+
+export const FOOD_PREFS = ['Vegetarian', 'Non-vegetarian', 'Vegan', 'Jain', 'No preference']
+
+export const PARTY = ['Solo', 'Partner', 'Friends', 'Family (kids)', 'With my parents', 'Group (5+)']
+
+export const DURATIONS = ['2–3 days', '4–6 days', '1–2 weeks', '2+ weeks']
+
+export const MONTH_FLEXIBLE = "I'm flexible"
+export const MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+  MONTH_FLEXIBLE,
+]
+
+export const VIBES = [
+  'Food & dining', 'Culture & history', 'Hidden gems', 'Nature & outdoors', 'Nightlife',
+  'Shopping', 'Wellness', 'Adventure', 'Local life', 'Popular landmarks',
+]
+export const VIBES_MAX = 3
+
+// Total for the whole trip, per person. `short` keeps the pills compact.
+export const BUDGETS = [
+  { key: 'Budget', label: 'Budget', range: 'under ₹30,000', short: 'under ₹30k' },
+  { key: 'Mid-range', label: 'Mid-range', range: '₹30,000–60,000', short: '₹30k–60k' },
+  { key: 'Comfortable', label: 'Comfortable', range: '₹60,000–1,00,000', short: '₹60k–1L' },
+  { key: 'Luxury', label: 'Luxury', range: '₹1,00,000+', short: '₹1L+' },
+]
+
+// ── Planning screen — checklist derived from stated preferences ─
+const VIBE_TASKS = {
+  'Food & dining': 'Shortlisting places to eat worth planning a day around',
+  'Culture & history': 'Weaving in the temples and old towns worth your time',
+  'Hidden gems': 'Digging up hidden gems locals actually go to',
+  'Nature & outdoors': 'Finding the beaches and trails that fit your route',
+  'Nightlife': 'Scoping out the best evenings and night markets',
+  'Shopping': 'Mapping the markets and shopping streets',
+  'Wellness': 'Slotting in downtime, spas and slow mornings',
+  'Adventure': 'Lining up the adventure activities worth booking ahead',
+  'Local life': 'Picking corners where you can live like a local',
+  'Popular landmarks': 'Timing the big landmarks to dodge the crowds',
 }
 
-// Suggestions (Screens 6/7/8). `type` drives the filter chips & banner colour.
-export const SUGGESTIONS = [
-  {
-    id: 'g1',
-    type: 'Stops',
-    typeLabel: 'Swap this stop',
-    impact: '4.8★ vs 3.9★',
-    scoreDelta: 8,
-    targetStopId: 's5',
-    current: { name: 'Musée Grévin', meta: '3.9★ · 1h30 visit' },
-    suggested: {
-      name: "Musée d'Orsay",
-      image: IMAGES.museeOrsay,
-      meta: '4.8★ · saves 45 mins backtracking',
-      category: 'culture',
-      rating: 4.7,
-      area: 'Rive Gauche, 7th',
-      about:
-        'Impressionist masterworks in a former railway station. Lighter crowds before noon and right on your Day-2 route.',
-      attrs: ['Avg visit: 2 hrs', 'Best: Morning', 'Booking: No'],
-      price: 'From ₹650 per person',
-      available: true,
-      day: 'Day 2', slot: '3:00 PM',
-    },
-    social: { count: 247, text: '247 Scapia travellers booked this' },
-    quotes: [
-      { name: 'Aanya', trip: 'solo trip', text: '“Quieter than the Louvre and the café upstairs is unreal.”' },
-      { name: 'Rohan', trip: 'with partner', text: '“We spent two hours and wished we had more.”' },
-    ],
-  },
-  {
-    id: 'g2',
-    type: 'Route',
-    typeLabel: 'Better route',
-    impact: 'Saves 40 mins',
-    scoreDelta: 6,
-    targetStopId: 's4',
-    current: { name: 'Day 2 zig-zag order', meta: '2 crossings of the Seine' },
-    suggested: {
-      name: 'Cluster the Left Bank first',
-      image: IMAGES.leftBank,
-      meta: 'One loop · saves 40 mins',
-      category: 'transport',
-      rating: null,
-      area: 'Day 2 reorder',
-      about:
-        'Reordering Day 2 to do the Left Bank stops together cuts two river crossings and a metro change.',
-      attrs: ['Saves: 40 mins', 'No new bookings', 'Same stops'],
-      price: null,
-      available: true,
-      day: 'Day 2', slot: 're-ordered',
-    },
-    social: { text: 'Trending in Paris this week' },
-    quotes: [
-      { name: 'Meera', trip: 'family', text: '“Way less time on the metro with kids.”' },
-    ],
-  },
-  {
-    id: 'g3',
-    type: 'Stops',
-    typeLabel: 'Add this stop',
-    impact: '+5 score points',
-    scoreDelta: 5,
-    targetStopId: null,
-    current: { name: 'Gap on Day 1 evening', meta: 'Nothing after 13:00' },
-    suggested: {
-      name: 'Le Comptoir du Relais',
-      image: IMAGES.bistro,
-      meta: '4.6★ · classic bistro',
-      category: 'food',
-      rating: 4.6,
-      area: 'Saint-Germain, 6th',
-      about:
-        'A beloved neighbourhood bistro a short walk from your hotel — fills the empty Day-1 evening.',
-      attrs: ['Avg visit: 1.5 hrs', 'Best: Evening', 'Booking: Yes'],
-      price: 'From ₹1,200 per person',
-      available: true,
-      day: 'Day 1', slot: '8:00 PM',
-    },
-    social: { count: 1200, text: 'Saved by 1.2K people like you' },
-    quotes: [
-      { name: 'Karan', trip: 'friends', text: '“Book ahead — worth every minute of the wait otherwise.”' },
-    ],
-  },
-  {
-    id: 'g4',
-    type: 'Timing',
-    typeLabel: 'Better timing',
-    impact: 'Skip the queue',
-    scoreDelta: 3,
-    targetStopId: 's1',
-    current: { name: 'Louvre at 09:30', meta: 'Peak entry queue' },
-    suggested: {
-      name: 'Louvre at 08:30 (early entry)',
-      image: IMAGES.louvre,
-      meta: 'Save ~35 mins queuing',
-      category: 'culture',
-      rating: 4.7,
-      area: '1st arr.',
-      about:
-        'Shifting one hour earlier beats the tour-group rush. Same stop, far less waiting.',
-      attrs: ['Saves: 35 mins', 'Best: Early AM', 'Booking: Recommended'],
-      price: null,
-      available: true,
-      day: 'Day 1', slot: '8:30 AM',
-    },
-    social: { count: 530, text: '530 travellers shifted this earlier' },
-    quotes: [
-      { name: 'Isha', trip: 'solo trip', text: '“Walked straight in. Felt like I had the place to myself.”' },
-    ],
-  },
-  {
-    id: 'g5',
-    type: 'Stays',
-    typeLabel: 'Better stay',
-    impact: '+4 score points',
-    scoreDelta: 4,
-    targetStopId: 's3',
-    current: { name: 'Hôtel Le Marais', meta: '3.8★ · 25 min from stops' },
-    suggested: {
-      name: 'Hôtel Saint-Germain',
-      image: IMAGES.hotel,
-      meta: '4.6★ · 8 min from your stops',
-      category: 'stay',
-      rating: 4.6,
-      area: '6th arr.',
-      about:
-        'A central base that cuts daily transit — closer to three of your five planned stops.',
-      attrs: ['Central', 'Free cancellation', 'Booking: Yes'],
-      price: 'From ₹8,400 per night',
-      available: true,
-      day: 'All nights', slot: 'check-in 15:00',
-    },
-    social: { count: 380, text: 'Saved by 380 people like you' },
-    quotes: [
-      { name: 'Devika', trip: 'with partner', text: '“Rolled out of bed and onto the route every morning.”' },
-    ],
-  },
-  {
-    id: 'g6',
-    type: 'Route',
-    typeLabel: 'Better route',
-    impact: 'Saves 20 mins',
-    scoreDelta: 2,
-    targetStopId: 's7',
-    current: { name: 'Montmartre then Sacré-Cœur', meta: 'Uphill twice' },
-    suggested: {
-      name: 'Sacré-Cœur first, downhill walk',
-      image: IMAGES.sacreCoeur,
-      meta: 'One climb · saves 20 mins',
-      category: 'transport',
-      rating: null,
-      area: 'Day 3 reorder',
-      about: 'Start at the top and wander down through Montmartre instead of climbing twice.',
-      attrs: ['Saves: 20 mins', 'No new bookings', 'Easier on foot'],
-      price: null,
-      available: true,
-      day: 'Day 3', slot: 're-ordered',
-    },
-    social: { text: 'Trending in Paris this week' },
-    quotes: [
-      { name: 'Sana', trip: 'friends', text: '“So much better than dragging ourselves up twice.”' },
-    ],
-  },
-]
-
-export const FILTERS = ['All', 'Route', 'Stops', 'Timing', 'Stays']
-
-export const QUESTIONS_TOTAL = 5
-
-// Loading status messages (Screen 5)
-export const LOADING_MESSAGES = [
-  'Checking your route efficiency…',
-  'Comparing with similar travellers…',
-  'Finding better options nearby…',
-  'Almost there…',
-]
-
-export function scoreBand(value) {
-  if (value < 50) return { name: 'low', color: 'var(--feedback-negative)', tint: 'var(--warning-red-000)' }
-  if (value < 75) return { name: 'mid', color: 'var(--feedback-warning)', tint: 'var(--alert-yellow-000)' }
-  if (value < 90) return { name: 'good', color: 'var(--feedback-positive)', tint: 'var(--success-green-000)' }
-  return { name: 'great', color: 'var(--success-green-700)', tint: 'var(--success-green-000)' }
+export function buildPlanningTasks({ budget, pace, vibes, month, food }) {
+  const tasks = []
+  const b = BUDGETS.find((x) => x.key === budget) || BUDGETS[1]
+  tasks.push(`Sorting through hotels for ${b.label.toLowerCase()} budget`)
+  if (month === MONTH_FLEXIBLE) tasks.push('Finding the cheapest weeks to travel')
+  else if (month) tasks.push(`Checking prices and weather for ${month}`)
+  tasks.push(pace <= 50 ? 'Crafting a route which is not rushed' : 'Packing your days without wasting time in transit')
+  if (food && food !== 'No preference') tasks.push(`Making sure every stop has solid ${food.toLowerCase()} options`)
+  ;(vibes.length ? vibes : ['Popular landmarks']).slice(0, 1).forEach((v) => {
+    if (VIBE_TASKS[v]) tasks.push(VIBE_TASKS[v])
+  })
+  return tasks
 }
