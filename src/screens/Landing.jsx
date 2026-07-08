@@ -40,7 +40,7 @@ export default function Landing() {
 
         {/* Hero — provided artwork: chat mockup over Linh's photo */}
         <motion.img
-          src="/front_page.png"
+          src={`${import.meta.env.BASE_URL}front_page.png`}
           alt="Chat with Linh, your local destination expert"
           style={{ width: '100%', height: 'auto', display: 'block' }}
           initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}

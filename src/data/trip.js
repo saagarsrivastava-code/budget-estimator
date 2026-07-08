@@ -48,18 +48,22 @@ export const TRIP = {
   ],
 }
 
+// Asset base — respects Vite's configured base so paths work on the
+// GitHub Pages project subpath (…/itinerary-scorer-app/) and in local dev.
+export const ASSET_BASE = import.meta.env.BASE_URL
+
 // Local travel experts who vet and edit the itinerary.
 // Linh's photo lives at public/linh.png; stock stand-in only if it goes missing.
 export const EXPERT = {
   name: 'Linh Fa',
   title: 'Thai traveller with 5 YOE',
-  avatar: '/linh.png',
+  avatar: `${ASSET_BASE}linh.png`,
 }
 export const EXPERT_FALLBACK = IMG('1573496359142-b8d87734a5a2', 200) + '&crop=faces'
 export const EXPERT_FALLBACK_LARGE = IMG('1573496359142-b8d87734a5a2', 600) + '&crop=faces'
 export function onAvatarError(e) {
   const img = e.currentTarget
-  if (img.src.endsWith('/linh.png')) img.src = img.dataset.fallback || EXPERT_FALLBACK
+  if (img.src.endsWith('linh.png')) img.src = img.dataset.fallback || EXPERT_FALLBACK
 }
 export const EXPERTS = [
   EXPERT,
