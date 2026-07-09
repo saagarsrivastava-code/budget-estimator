@@ -125,9 +125,12 @@ function StepPreferences({ answers, setAnswer }) {
       <div className="slider-wrap" style={{ marginTop: 18 }}>
         <div className="slider-track">
           <div className="slider-fill" style={{ width: `${pace}%` }} />
+          {[0, 25, 50, 75, 100].map((t) => (
+            <span key={t} className={`slider-stop${pace >= t ? ' is-on' : ''}`} style={{ left: `${t}%` }} />
+          ))}
           <div className="slider-knob" style={{ left: `${pace}%` }} />
           <input
-            className="slider-input" type="range" min="0" max="100" step="5"
+            className="slider-input" type="range" min="0" max="100" step="25"
             value={pace} onChange={(e) => setAnswer('pace', Number(e.target.value))}
             aria-label="Travel pace"
           />

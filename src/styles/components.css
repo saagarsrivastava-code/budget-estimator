@@ -217,7 +217,9 @@
 .slider-wrap { margin-top: 26px; }
 .slider-track { position: relative; height: 7px; border-radius: 4px; background: var(--bg-tertiary); }
 .slider-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 4px; background: var(--brand-primary); }
-.slider-knob { position: absolute; top: 50%; width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 2.5px solid var(--brand-primary); transform: translate(-50%, -50%); box-shadow: 0 2px 8px rgba(3,18,35,0.18); }
+.slider-stop { position: absolute; top: 50%; width: 10px; height: 10px; border-radius: 50%; background: var(--bg-primary); border: 2px solid var(--border-strong); transform: translate(-50%, -50%); z-index: 1; }
+.slider-stop.is-on { border-color: var(--brand-primary); }
+.slider-knob { position: absolute; top: 50%; width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 2.5px solid var(--brand-primary); transform: translate(-50%, -50%); box-shadow: 0 2px 8px rgba(3,18,35,0.18); z-index: 2; }
 .slider-input { position: absolute; inset: -10px 0; width: 100%; opacity: 0; cursor: pointer; height: 28px; }
 .slider-ticks { display: flex; justify-content: space-between; margin-top: 12px; }
 .slider-tick { width: 8px; height: 8px; border-radius: 50%; background: var(--bg-tertiary); }
