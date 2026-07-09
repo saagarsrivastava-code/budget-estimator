@@ -38,6 +38,7 @@ const PATHS = {
   screenshot: <><path d="M4 8V6a2 2 0 012-2h2M16 4h2a2 2 0 012 2v2M20 16v2a2 2 0 01-2 2h-2M8 20H6a2 2 0 01-2-2v-2" /><circle cx="12" cy="12" r="2.6" /></>,
   bolt: <path d="M13 3L5.5 13.5H11L10.5 21 18 10.5h-5.5z" />,
   lock: <><rect x="5.5" y="11" width="13" height="9" rx="2.5" /><path d="M8.5 11V8a3.5 3.5 0 017 0v3" /></>,
+  bell: <><path d="M6 9a6 6 0 0112 0c0 5 2 6 2 6H4s2-1 2-6z" /><path d="M10 20a2 2 0 004 0" /></>,
 }
 
 export default function Icon({ name, size = 22, stroke = 1.8, className, style }) {

@@ -126,8 +126,11 @@ export default function Planning() {
         <div className="spacer" />
         {phase === 'planning' && (
           <motion.div className="plan-eta" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-            <div className="t-p-med" style={{ fontWeight: 700 }}>We'll get back to you in about 6 business hours.</div>
-            <div className="t-p-med" style={{ marginTop: 2 }}>Feel free to exit this screen. We'll send you a notification</div>
+            <span className="plan-eta__icn"><Icon name="bell" size={18} /></span>
+            <div>
+              <div className="t-shd-sm" style={{ fontWeight: 700 }}>We'll get back to you in about 6 business hours.</div>
+              <div className="t-p-small" style={{ marginTop: 3 }}>Feel free to exit this screen — we'll send you a notification.</div>
+            </div>
           </motion.div>
         )}
       </div>

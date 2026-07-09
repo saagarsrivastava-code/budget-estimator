@@ -556,10 +556,17 @@
 }
 .plan-check__box.is-on { background: var(--secondary-blue-400); border-color: var(--secondary-blue-400); }
 .plan-eta {
+  display: flex; align-items: flex-start; gap: 12px;
   margin: 20px 0 calc(16px + env(safe-area-inset-bottom));
-  padding: 14px 16px;
-  background: var(--bg-secondary); border-radius: var(--r-lg);
+  padding: 15px 16px;
+  background: var(--primary-scapia-000);
+  border: 1px solid var(--primary-scapia-100); border-radius: var(--r-lg);
   color: var(--content-primary); text-align: left;
+}
+.plan-eta__icn {
+  flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+  background: var(--brand-primary); color: #fff;
+  display: flex; align-items: center; justify-content: center;
 }
 
 /* ready — itinerary teaser preview */
