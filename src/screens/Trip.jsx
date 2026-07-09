@@ -43,7 +43,15 @@ export default function Trip() {
   const [updatedId, setUpdatedId] = useState(null)
   const [changesDone, setChangesDone] = useState(0)
   const [unlocked, setUnlocked] = useState(false)
+  const [editSuggestion, setEditSuggestion] = useState(null)
   const changeIdx = useRef(0)
+
+  // Tapping a stop's edit pencil opens the chat pre-filled with a request
+  // about that stop — edits go through Linh, matching the rest of the flow.
+  function editStop(stop) {
+    setEditSuggestion(`Can we change ${stop.name}?`)
+    setChatOpen(true)
+  }
 
   function nextChange() {
     const c = CHANGES[changeIdx.current % CHANGES.length]
@@ -122,7 +130,7 @@ export default function Trip() {
                         </motion.div>
                       </AnimatePresence>
                     </div>
-                    <button className="stop__edit" aria-label={`Edit ${stop.name}`}><Icon name="pencil" size={16} /></button>
+                    <button className="stop__edit" aria-label={`Edit ${stop.name}`} onClick={() => editStop(stop)}><Icon name="pencil" size={16} /></button>
                   </div>
                   {stop.transitAfter && (
                     <div className="transit">
@@ -150,9 +158,9 @@ export default function Trip() {
       )}
 
       <ChatSheet
-        open={chatOpen} onClose={() => setChatOpen(false)}
+        open={chatOpen} onClose={() => { setChatOpen(false); setEditSuggestion(null) }}
         nextChange={nextChange} onApplied={scheduleApply}
-        suggestion={CHANGES[changeIdx.current % CHANGES.length].prompt}
+        suggestion={editSuggestion || CHANGES[changeIdx.current % CHANGES.length].prompt}
         blocked={changesDone >= FREE_EDITS && !unlocked}
         onUnlock={() => setUnlocked(true)}
       />
