@@ -20,14 +20,13 @@ export function ExpertCard() {
   return (
     <div className="excard">
       <div className="excard__head">
-        <ExpertAvatar size={64} />
+        <ExpertAvatar size={54} />
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="t-lb-sm muted">Your local expert</div>
           <div className="t-hd-sm">{EXPERT.name}</div>
-          <span className="expert-card__verify"><Icon name="check" size={13} />{EXPERT.title}</span>
+          <span className="expert-card__verify"><Icon name="check" size={12} />{EXPERT.title}</span>
         </div>
       </div>
-      <p className="t-p-small" style={{ marginTop: 12, color: 'var(--content-secondary)' }}>{EXPERT.blurb}</p>
       <div className="excard__stats">
         {EXPERT.stats.map((s) => (
           <div key={s.label} className="excard__stat">
@@ -36,7 +35,6 @@ export function ExpertCard() {
           </div>
         ))}
       </div>
-      <div className="excard__langs"><Icon name="chat" size={14} /> Speaks {EXPERT.langs}</div>
     </div>
   )
 }
