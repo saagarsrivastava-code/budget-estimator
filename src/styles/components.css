@@ -612,7 +612,7 @@
   position: relative; margin-top: 18px; border-radius: var(--r-lg);
   border: 1px solid var(--border-opaque); background: var(--bg-secondary);
   padding: 14px; overflow: hidden; box-shadow: var(--shadow-card);
-  text-align: left; display: block; width: 100%; cursor: pointer;
+  text-align: left; display: block; width: 100%;
 }
 .ready-preview__page { background: var(--bg-primary); border-radius: var(--r-md); padding: 14px; }
 

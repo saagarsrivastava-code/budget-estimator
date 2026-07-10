@@ -19,10 +19,8 @@ export default function ItineraryReady() {
         <div className="t-p-small muted" style={{ marginTop: 4 }}>{TRIP.destination} · {TRIP.durationDays} days · {TRIP.dateRange}</div>
 
         <motion.div
-          className="ready-preview" role="button" tabIndex={0}
+          className="ready-preview"
           initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}
-          onClick={() => navigate('/trip?tab=itinerary')}
-          onKeyDown={(e) => { if (e.key === 'Enter') navigate('/trip?tab=itinerary') }}
         >
           <div className="ready-preview__page">
             {TRIP.days.map((day, di) => (
