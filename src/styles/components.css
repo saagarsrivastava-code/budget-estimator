@@ -479,6 +479,10 @@
   background: var(--bg-secondary);
 }
 .ai-transcript::-webkit-scrollbar { width: 0; }
+/* Neutral (greyed) bubbles inside the transcript — keeps the orange for the CTA only */
+.ai-transcript .bubble--them { background: var(--neutral-grey-200); color: var(--content-primary); }
+.ai-transcript .bubble--me { background: var(--neutral-grey-700); color: #fff; }
+.ai-transcript .ai-orb--xs { background: var(--neutral-grey-300); color: var(--neutral-grey-700); }
 .ai-callbtn {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   margin-top: 16px; flex-shrink: 0;
