@@ -806,7 +806,17 @@
   transition: transform 0.12s, background 0.15s;
 }
 .stepnum__btn:active { transform: scale(0.94); background: var(--bg-secondary); }
+.stepnum__btn:disabled { opacity: 0.35; pointer-events: none; }
 .stepnum__val { font: 700 22px/1 var(--font-body); min-width: 26px; text-align: center; font-variant-numeric: tabular-nums; }
+
+/* Adults / children counters */
+.counter-group { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+.counter-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 14px; border: 1px solid var(--border-opaque); border-radius: var(--r-md); background: var(--bg-primary);
+}
+.counter-row .stepnum { gap: 12px; }
+.counter-row .stepnum__btn { width: 38px; height: 38px; }
 
 /* ── Itineraries — budget estimate card (simple) ──────────────── */
 .budget {

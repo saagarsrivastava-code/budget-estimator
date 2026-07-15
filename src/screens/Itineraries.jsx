@@ -32,7 +32,9 @@ export default function Itineraries() {
         <div className="t-p-small muted" style={{ marginTop: 4 }}>
           {[
             answers.dayRange,
-            `${answers.people} ${answers.people === 1 ? 'traveller' : 'travellers'}`,
+            answers.kids > 0
+              ? `${answers.people} ${answers.people === 1 ? 'adult' : 'adults'} · ${answers.kids} ${answers.kids === 1 ? 'child' : 'children'}`
+              : `${answers.people} ${answers.people === 1 ? 'traveller' : 'travellers'}`,
             answers.tripType,
           ].filter(Boolean).join(' · ')}
         </div>

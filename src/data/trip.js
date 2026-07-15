@@ -96,11 +96,11 @@ export const EXPERT = {
 }
 // The AI trip expert reachable by call from the itinerary screen.
 export const EXPERT_AI = {
-  name: 'Scapia Expert AI',
-  tagline: 'Your AI trip expert, on call 24×7',
+  name: 'Scapia Local Expert AI',
+  tagline: 'Your AI local-trip expert, on call 24×7',
   blurb: 'Trained on thousands of trips crafted by our local destination experts — so it plans like a local, instantly.',
   stats: [
-    { value: '250+', label: 'destination experts learned from' },
+    { value: '250+', label: 'local experts learned from' },
     { value: '1.2L+', label: 'itineraries created' },
     { value: '4.9★', label: '18,000+ ratings' },
   ],
@@ -240,7 +240,8 @@ export function estimateBudget(answers) {
 
   const activitiesPerDay = 2500
   const transferPerDay = transport === 'Private' ? 2200 : 700
-  const groundTotal = (activitiesPerDay + transferPerDay) * days
+  const foodPerDay = 1800
+  const groundTotal = (activitiesPerDay + transferPerDay + foodPerDay) * days
 
   const typeBump = tripType === 'Honeymoon' ? 1.25 : tripType === 'Bachelor' ? 1.15 : 1
   const base = (flights + stayTotal + groundTotal) * typeBump
@@ -252,6 +253,7 @@ export function estimateBudget(answers) {
     parts: [
       { label: 'Flights · return', amount: flights },
       { label: `Stays · ${Math.max(1, Math.round(days) - 1)} nights`, amount: stayTotal },
+      { label: 'Food & dining', amount: Math.round(foodPerDay * days) },
       { label: 'Activities & entries', amount: Math.round(activitiesPerDay * days) },
       { label: 'Local transfers', amount: Math.round(transferPerDay * days) },
     ],

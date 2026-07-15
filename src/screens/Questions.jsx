@@ -136,8 +136,29 @@ function StepDestination({ answers, setAnswer }) {
 }
 
 /* ── Step 2 · Trip type, people, days ─────────────────────────── */
+function CounterRow({ label, hint, value, onChange, min }) {
+  return (
+    <div className="counter-row">
+      <div>
+        <div className="t-shd-sm" style={{ fontWeight: 600 }}>{label}</div>
+        <div className="t-lb-sm muted">{hint}</div>
+      </div>
+      <div className="stepnum">
+        <button className="stepnum__btn" onClick={() => onChange(value - 1)} disabled={value <= min} aria-label={`Fewer ${label}`}>
+          <Icon name="minus" size={18} />
+        </button>
+        <span className="stepnum__val">{value}</span>
+        <button className="stepnum__btn" onClick={() => onChange(value + 1)} aria-label={`More ${label}`}>
+          <Icon name="plus" size={18} />
+        </button>
+      </div>
+    </div>
+  )
+}
+
 function StepBasics({ answers, setAnswer }) {
   const setPeople = (n) => setAnswer('people', Math.max(1, Math.min(20, n)))
+  const setKids = (n) => setAnswer('kids', Math.max(0, Math.min(20, n)))
 
   return (
     <>
@@ -155,18 +176,10 @@ function StepBasics({ answers, setAnswer }) {
         ))}
       </div>
 
-      <QSection title="How many people?" first={false}>
-        <div className="stepnum">
-          <button className="stepnum__btn" onClick={() => setPeople(answers.people - 1)} aria-label="Fewer">
-            <Icon name="minus" size={18} />
-          </button>
-          <span className="stepnum__val">{answers.people}</span>
-          <button className="stepnum__btn" onClick={() => setPeople(answers.people + 1)} aria-label="More">
-            <Icon name="plus" size={18} />
-          </button>
-          <span className="t-p-small muted" style={{ marginLeft: 12 }}>
-            {answers.people === 1 ? 'traveller' : 'travellers'}
-          </span>
+      <QSection title="Who's travelling?" first={false}>
+        <div className="counter-group">
+          <CounterRow label="Adults" hint="Age 12+" value={answers.people} min={1} onChange={setPeople} />
+          <CounterRow label="Children" hint="Age 2–11" value={answers.kids} min={0} onChange={setKids} />
         </div>
       </QSection>
 

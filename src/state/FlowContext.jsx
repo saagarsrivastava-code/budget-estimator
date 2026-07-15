@@ -13,7 +13,8 @@ export function FlowProvider({ children }) {
     cities: [],         // chosen city names (revealed after location)
     activities: [],     // activity types (revealed after cities)
     tripType: null,     // honeymoon / vacation / family / …
-    people: 2,          // number of travellers
+    people: 2,          // adults
+    kids: 0,            // children (age 2–11)
     dayRange: null,     // '2–4 days' | '5–6 days' | '7–8 days'
     stays: [],          // stay types
     transport: null,    // 'Public' | 'Private'
