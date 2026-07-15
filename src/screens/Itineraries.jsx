@@ -60,6 +60,9 @@ export default function Itineraries() {
         <div className="stack-12">
           {variants.map((v, i) => {
             const on = picked === v.key
+            // Per-plan cost: relaxed trims paid activities, classics is the fullest.
+            const cost = { popular: budget.high, offbeat: Math.round((budget.low + budget.high) / 2000) * 1000, relaxed: budget.low }[v.key] || budget.low
+            const daysLabel = answers.dayRange || `${Math.round(budget.days)} days`
             return (
               <div
                 key={v.key}
@@ -80,6 +83,11 @@ export default function Itineraries() {
                 </div>
 
                 <div className="varcard__body">
+                  <div className="varcard__price">
+                    <span className="varcard__price-amt">{fmtINR(cost)}</span>
+                    <span className="varcard__price-unit">/ person</span>
+                    <span className="varcard__price-days"><Icon name="clock" size={13} />{daysLabel}</span>
+                  </div>
                   <div className="varcard__cities"><Icon name="route" size={13} />{v.cityLine}</div>
 
                   <ul className="varcard__list">
