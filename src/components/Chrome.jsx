@@ -1,17 +1,14 @@
-import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import Icon from './Icon.jsx'
 
-/* Full-screen transition wrapper used by every screen.
-   Top padding respects the device safe area (notch / status bar). */
+/* Full-screen transition wrapper used by every screen. The enter animation is
+   a plain CSS keyframe (see .screen in components.css) — reliable on mount,
+   unlike framer's motion-level enter which stalled here. Top padding respects
+   the device safe area (notch / status bar). */
 export function Screen({ children, className = '' }) {
   return (
-    <motion.div
-      className={`screen ${className}`}
-      initial={{ opacity: 0, x: 18 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -18 }}
-      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+    <div
+      className={`screen screen--enter ${className}`}
       style={{
         position: 'absolute',
         inset: 0,
@@ -21,7 +18,7 @@ export function Screen({ children, className = '' }) {
       }}
     >
       {children}
-    </motion.div>
+    </div>
   )
 }
 

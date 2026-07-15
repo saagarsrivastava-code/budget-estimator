@@ -3,6 +3,25 @@
    ============================================================ */
 
 .screen { background: var(--bg-primary); }
+.screen--enter { animation: screen-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes screen-in {
+  from { opacity: 0; transform: translateX(18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Reliable CSS entrance animations (framer's mount animations stall in this
+   preview env, leaving opacity:0 content invisible). Stagger with inline
+   animation-delay. */
+.rise { animation: rise-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.rise-x { animation: rise-x-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes rise-x-in {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
 
 /* ── AppBar ───────────────────────────────────────────────────── */
 .appbar {
@@ -418,6 +437,49 @@
 .call__btn { width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.12); color: #fff; display: flex; align-items: center; justify-content: center; }
 .call__end { width: 68px; height: 68px; border-radius: 50%; background: var(--feedback-negative); color: #fff; display: flex; align-items: center; justify-content: center; transform: rotate(135deg); box-shadow: 0 8px 24px rgba(245,34,45,0.4); }
 
+/* AI call — reliable CSS entrance + animated orb/pulse/waveform */
+.call--enter { animation: call-in 0.28s ease both; }
+@keyframes call-in { from { opacity: 0; } to { opacity: 1; } }
+.call__aiorb {
+  width: 116px; height: 116px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  background: radial-gradient(120% 120% at 30% 22%, var(--primary-scapia-300), var(--brand-primary) 72%);
+  box-shadow: 0 12px 44px rgba(206, 62, 0, 0.5); border: 3px solid rgba(255,255,255,0.25);
+}
+.call__pulse--anim { animation: call-pulse 1.6s ease-out infinite; }
+@keyframes call-pulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.call__wave { display: flex; align-items: flex-end; gap: 5px; height: 32px; margin-top: 26px; }
+.call__wave span {
+  width: 4px; height: 8px; border-radius: 3px; background: rgba(255,255,255,0.8);
+  animation: call-wave 0.9s ease-in-out infinite;
+}
+@keyframes call-wave { 0%, 100% { height: 8px; } 50% { height: 30px; } }
+
+/* AI expert bottom sheet */
+.ai-intro { display: flex; align-items: center; gap: 12px; }
+.ai-orb {
+  display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0;
+  border-radius: 50%;
+  background: radial-gradient(120% 120% at 30% 22%, var(--primary-scapia-300), var(--brand-primary) 72%);
+}
+.ai-orb--sm { width: 46px; height: 46px; box-shadow: 0 4px 14px rgba(206, 62, 0, 0.3); }
+.ai-orb--xs { width: 26px; height: 26px; }
+.ai-stats { display: flex; gap: 8px; margin-top: 16px; }
+.ai-stat { flex: 1; text-align: center; background: var(--bg-secondary); border-radius: var(--r-md); padding: 12px 6px; }
+.ai-stat__val { font: 700 18px/1.1 var(--font-body); color: var(--content-primary); }
+.ai-stat__lbl { font-size: 10.5px; line-height: 1.3; color: var(--content-secondary); margin-top: 5px; }
+.ai-transcript {
+  display: flex; flex-direction: column; gap: 8px; overflow-y: auto; max-height: 32vh; padding: 2px;
+}
+.ai-transcript::-webkit-scrollbar { width: 0; }
+.ai-callbtn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 16px; flex-shrink: 0;
+}
+
 /* ── Params overview (v3 · no-questions flow) ─────────────────── */
 .paramtile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .paramtile { padding: 12px; }
@@ -727,6 +789,90 @@
 .trust-inline span { font-size: 10.5px; color: var(--content-tertiary); display: flex; align-items: center; gap: 5px; }
 .trust-inline span::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--content-tertiary); }
 
+/* ── Guided flow — number stepper (people) ────────────────────── */
+.stepnum { display: flex; align-items: center; gap: 14px; }
+.stepnum__btn {
+  width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+  border: 1.5px solid var(--border-strong); background: var(--bg-primary); color: var(--content-primary);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.12s, background 0.15s;
+}
+.stepnum__btn:active { transform: scale(0.94); background: var(--bg-secondary); }
+.stepnum__val { font: 700 22px/1 var(--font-body); min-width: 26px; text-align: center; font-variant-numeric: tabular-nums; }
+
+/* ── Itineraries — budget estimate card (simple) ──────────────── */
+.budget {
+  margin-top: 18px; padding: 16px 18px;
+  border-radius: var(--r-lg); border: 1px solid var(--border-opaque);
+  background: linear-gradient(180deg, var(--primary-scapia-000), var(--bg-primary) 62%);
+  box-shadow: var(--shadow-card);
+}
+.budget__label { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--content-secondary); }
+.budget__range { font: 800 28px/1.1 var(--font-body); letter-spacing: -0.015em; margin-top: 8px; color: var(--content-primary); }
+.budget__range span { color: var(--content-tertiary); font-weight: 500; }
+.budget__parts { margin-top: 14px; border-top: 1px solid var(--border-opaque); padding-top: 6px; }
+.budget__part { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; }
+.budget__note {
+  display: flex; align-items: center; gap: 7px; margin-top: 10px;
+  font-size: 12px; color: var(--content-secondary);
+}
+.budget__note svg { color: var(--brand-primary); flex-shrink: 0; }
+
+/* ── Itineraries — plan cards with imagery ────────────────────── */
+.varcard {
+  display: block; width: 100%; text-align: left; cursor: pointer; overflow: hidden;
+  border: 1.5px solid var(--border-opaque); border-radius: var(--r-lg);
+  background: var(--bg-primary); box-shadow: var(--shadow-card);
+  transition: border-color 0.15s, transform 0.12s, box-shadow 0.15s;
+}
+.varcard:active { transform: scale(0.995); }
+
+.varcard__banner { position: relative; height: 132px; }
+.varcard__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.varcard__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(3,18,35,0.05) 30%, rgba(3,18,35,0.78) 100%);
+}
+.varcard__bannertext { position: absolute; left: 14px; right: 14px; bottom: 11px; color: #fff; }
+.varcard__title { font: 700 19px/1.2 var(--font-body); }
+.varcard__banner .varcard__title { color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,0.35); }
+.varcard__tag { font-size: 12.5px; margin-top: 2px; color: rgba(255,255,255,0.9); text-shadow: 0 1px 6px rgba(0,0,0,0.35); }
+.varcard__pace {
+  position: absolute; top: 11px; left: 11px;
+  font-size: 11px; font-weight: 600; color: var(--content-primary);
+  background: rgba(255,255,255,0.92); border-radius: var(--r-pill); padding: 4px 10px;
+  backdrop-filter: blur(4px);
+}
+.varcard__badge {
+  position: absolute; top: 9px; right: 9px; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--brand-primary); color: #fff; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.varcard__body { padding: 12px 14px 14px; }
+.varcard__cities {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12.5px; font-weight: 500; color: var(--content-secondary);
+}
+.varcard__cities svg { color: var(--content-tertiary); flex-shrink: 0; }
+.varcard__list { margin-top: 8px; display: flex; flex-direction: column; gap: 5px; }
+.varcard__list li {
+  display: flex; align-items: flex-start; gap: 7px; list-style: none;
+  font-size: 12.5px; line-height: 1.35; color: var(--content-primary);
+}
+.varcard__list li svg { color: var(--feedback-positive); flex-shrink: 0; margin-top: 2px; }
+
+/* Bigger, full-width edit CTA — identical on every card */
+.varcard__edit {
+  display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 14px;
+  font-size: 15px; font-weight: 700; color: var(--content-on-dark);
+  background: var(--brand-primary); border: 1.5px solid var(--brand-primary);
+  border-radius: var(--r-md); padding: 13px 16px; box-shadow: var(--shadow-cta);
+  transition: transform 0.12s;
+}
+.varcard__edit:active { transform: scale(0.98); }
+
 /* helpers */
 .stack-12 > * + * { margin-top: 12px; }
+.stack-10 > * + * { margin-top: 10px; }
 .stack-8 > * + * { margin-top: 8px; }

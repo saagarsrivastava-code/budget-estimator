@@ -1,24 +1,31 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
 import { Screen, Footer } from '../components/Chrome.jsx'
 import { Button, Stepper } from '../components/ui.jsx'
 import Icon from '../components/Icon.jsx'
 import { useFlow } from '../state/FlowContext.jsx'
-import { QUESTIONS_TOTAL, PARTY, DURATIONS, MONTHS, MONTH_FLEXIBLE, VIBES, VIBES_MAX, BUDGETS, STAY_TYPES, FOOD_PREFS } from '../data/trip.js'
+import {
+  DESTINATIONS, ACTIVITIES, TRIP_TYPES, DAY_RANGES,
+  STAY_TYPES, TRANSPORT_MODES, FOOD_PREFS,
+} from '../data/trip.js'
+
+const STEPS = 3
 
 export default function Questions() {
   const navigate = useNavigate()
   const { answers, setAnswer } = useFlow()
   const [step, setStep] = useState(0)
 
-  function back() { step === 0 ? navigate('/ideas') : setStep(step - 1) }
-  function next() { step === QUESTIONS_TOTAL - 1 ? navigate('/planning') : setStep(step + 1) }
+  function back() { step === 0 ? navigate('/') : setStep(step - 1) }
+  function next() { step === STEPS - 1 ? navigate('/itineraries') : setStep(step + 1) }
 
-  const answered = [
-    !!answers.party && !!answers.duration && !!answers.month,
-    answers.vibes.length > 0 && !!answers.budget,
-    !!answers.food, // notes are optional
+  const complete = [
+    // 1 · destination → cities → activities
+    !!answers.location && answers.cities.length > 0 && answers.activities.length > 0,
+    // 2 · trip type, people, days
+    !!answers.tripType && answers.people > 0 && !!answers.dayRange,
+    // 3 · stays, transport, food
+    answers.stays.length > 0 && !!answers.transport && !!answers.food,
   ][step]
 
   return (
@@ -26,41 +33,38 @@ export default function Questions() {
       <div className="pad" style={{ paddingTop: 8 }}>
         <div className="row" style={{ justifyContent: 'space-between' }}>
           <button className="appbar__back" style={{ marginLeft: -8 }} onClick={back} aria-label="Back"><Icon name="back" /></button>
-          <span className="t-p-small muted">{step + 1} of {QUESTIONS_TOTAL}</span>
+          <span className="t-p-small muted">{step + 1} of {STEPS}</span>
           <span style={{ width: 30 }} />
         </div>
-        <div style={{ marginTop: 12 }}><Stepper current={step + 1} total={QUESTIONS_TOTAL} /></div>
+        <div style={{ marginTop: 12 }}><Stepper current={step + 1} total={STEPS} /></div>
       </div>
 
-      <div className="screen-body pad" style={{ paddingTop: 34, paddingBottom: 20 }}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }}
-            transition={{ duration: 0.22 }}
-          >
-            {step === 0 && <StepBasics answers={answers} setAnswer={setAnswer} />}
-            {step === 1 && <StepPreferences answers={answers} setAnswer={setAnswer} />}
-            {step === 2 && <StepFood answers={answers} setAnswer={setAnswer} />}
-          </motion.div>
-        </AnimatePresence>
+      <div className="screen-body pad" style={{ paddingTop: 24, paddingBottom: 20 }}>
+        {/* Keyed div remounts on step change → CSS entrance re-runs. CSS (not
+            framer) because framer mount animations stall in this preview env. */}
+        <div key={step} className="rise-x">
+          {step === 0 && <StepDestination answers={answers} setAnswer={setAnswer} />}
+          {step === 1 && <StepBasics answers={answers} setAnswer={setAnswer} />}
+          {step === 2 && <StepPreferences answers={answers} setAnswer={setAnswer} />}
+        </div>
       </div>
 
       <Footer>
-        <Button full variant="dark" disabled={!answered} onClick={next}>
-          {step === QUESTIONS_TOTAL - 1 ? 'Send to local expert' : 'Next'}
+        <Button full variant="dark" disabled={!complete} onClick={next}>
+          {step === STEPS - 1 ? 'See itineraries' : 'Next'}
         </Button>
       </Footer>
     </Screen>
   )
 }
 
+/* ── shared bits ──────────────────────────────────────────────── */
 function QSection({ title, hint, first, children }) {
   return (
-    <div style={{ marginTop: first ? 0 : 28 }}>
+    <div style={{ marginTop: first ? 0 : 30 }}>
       <h2 className="q-title q-title--sm">{title}</h2>
       {hint && <div className="t-p-small muted" style={{ marginTop: 3 }}>{hint}</div>}
-      <div className="chips" style={{ marginTop: 12 }}>{children}</div>
+      <div className="chips" style={{ marginTop: 14 }}>{children}</div>
     </div>
   )
 }
@@ -73,122 +77,146 @@ function Pill({ on, disabled, onClick, children }) {
   )
 }
 
-/* 1 of 2 — the basics: who, how long, what month */
-function StepBasics({ answers, setAnswer }) {
-  return (
-    <>
-      <QSection title="Who are you going with?" first>
-        {PARTY.map((p) => (
-          <Pill key={p} on={answers.party === p} onClick={() => setAnswer('party', p)}>{p}</Pill>
-        ))}
-      </QSection>
-
-      <QSection title="How long?">
-        {DURATIONS.map((d) => (
-          <Pill key={d} on={answers.duration === d} onClick={() => setAnswer('duration', d)}>{d}</Pill>
-        ))}
-      </QSection>
-
-      <QSection title="What month?">
-        {MONTHS.map((m) => (
-          <Pill key={m} on={answers.month === m} onClick={() => setAnswer('month', m)}>
-            {m === MONTH_FLEXIBLE ? m : m.slice(0, 3)}
-          </Pill>
-        ))}
-      </QSection>
-    </>
-  )
+// Reveal wrapper for the progressive sub-questions — fades and slides in via
+// CSS (reliable, unlike framer's mount animation which stalls here).
+function Reveal({ show, children }) {
+  if (!show) return null
+  return <div className="rise">{children}</div>
 }
 
-/* 2 of 2 — preferences: pace, vibes, budget, notes */
-function StepPreferences({ answers, setAnswer }) {
-  const { pace, vibes, budget, stays } = answers
+/* ── Step 1 · Destination → cities → activities ───────────────── */
+function StepDestination({ answers, setAnswer }) {
+  const dest = DESTINATIONS.find((d) => d.key === answers.location)
 
-  function toggleVibe(v) {
-    if (vibes.includes(v)) setAnswer('vibes', vibes.filter((x) => x !== v))
-    else if (vibes.length < VIBES_MAX) setAnswer('vibes', [...vibes, v])
+  function pickLocation(key) {
+    if (key === answers.location) return
+    setAnswer('location', key)
+    setAnswer('cities', [])       // reset the dependent answers
+    setAnswer('activities', [])
   }
-  function toggleStay(s) {
-    setAnswer('stays', stays.includes(s) ? stays.filter((x) => x !== s) : [...stays, s])
+  function toggleCity(c) {
+    const on = answers.cities.includes(c)
+    setAnswer('cities', on ? answers.cities.filter((x) => x !== c) : [...answers.cities, c])
+  }
+  function toggleActivity(a) {
+    const on = answers.activities.includes(a)
+    setAnswer('activities', on ? answers.activities.filter((x) => x !== a) : [...answers.activities, a])
   }
 
   return (
     <>
-      <h2 className="q-title q-title--sm">How much free time do you want on your trip?</h2>
-      <div className="row" style={{ justifyContent: 'space-between', marginTop: 14, alignItems: 'flex-start', gap: 16 }}>
-        <div className="pace-end">
-          <span className={`pace-icn${pace <= 35 ? ' is-on' : ''}`}><Icon name="sun" size={19} /></span>
-          <div className="t-lb-sm" style={{ marginTop: 6 }}><b>I want more free time</b></div>
-        </div>
-        <div className="pace-end" style={{ textAlign: 'right', alignItems: 'flex-end' }}>
-          <span className={`pace-icn${pace >= 65 ? ' is-on' : ''}`}><Icon name="bolt" size={19} /></span>
-          <div className="t-lb-sm" style={{ marginTop: 6 }}><b>I want more activities</b></div>
-        </div>
+      <h1 className="q-title">Where do you want to go?</h1>
+      <div className="t-p-small muted" style={{ marginTop: 4 }}>Popular right now</div>
+
+      <div className="chips" style={{ marginTop: 14 }}>
+        {DESTINATIONS.map((d) => (
+          <Pill key={d.key} on={answers.location === d.key} onClick={() => pickLocation(d.key)}>
+            <span style={{ marginRight: 5 }}>{d.flag}</span>{d.label}
+          </Pill>
+        ))}
       </div>
-      <div className="slider-wrap" style={{ marginTop: 18 }}>
-        <div className="slider-track">
-          <div className="slider-fill" style={{ width: `${pace}%` }} />
-          {[0, 25, 50, 75, 100].map((t) => (
-            <span key={t} className={`slider-stop${pace >= t ? ' is-on' : ''}`} style={{ left: `${t}%` }} />
+
+      <Reveal show={!!dest}>
+        <QSection title={`Which cities in ${dest?.label}?`} hint="Pick the ones you want to cover">
+          {dest?.cities.map((c) => (
+            <Pill key={c} on={answers.cities.includes(c)} onClick={() => toggleCity(c)}>{c}</Pill>
           ))}
-          <div className="slider-knob" style={{ left: `${pace}%` }} />
-          <input
-            className="slider-input" type="range" min="0" max="100" step="25"
-            value={pace} onChange={(e) => setAnswer('pace', Number(e.target.value))}
-            aria-label="Travel pace"
-          />
-        </div>
+        </QSection>
+      </Reveal>
+
+      <Reveal show={answers.cities.length > 0}>
+        <QSection title="What do you want to do?" hint="Pick everything that sounds good">
+          {ACTIVITIES.map((a) => (
+            <Pill key={a} on={answers.activities.includes(a)} onClick={() => toggleActivity(a)}>{a}</Pill>
+          ))}
+        </QSection>
+      </Reveal>
+    </>
+  )
+}
+
+/* ── Step 2 · Trip type, people, days ─────────────────────────── */
+function StepBasics({ answers, setAnswer }) {
+  const setPeople = (n) => setAnswer('people', Math.max(1, Math.min(20, n)))
+
+  return (
+    <>
+      <h1 className="q-title">What kind of trip is this?</h1>
+      <div className="opt-grid" style={{ marginTop: 16 }}>
+        {TRIP_TYPES.map((t) => (
+          <button
+            key={t.key}
+            className={`opt${answers.tripType === t.key ? ' is-sel' : ''}`}
+            onClick={() => setAnswer('tripType', t.key)}
+          >
+            <span className="opt__icn"><Icon name={t.icon} size={20} /></span>
+            <span className="opt__label">{t.label}</span>
+          </button>
+        ))}
       </div>
 
-      <QSection title="What's this trip about?" hint={`Pick up to ${VIBES_MAX}`}>
-        {VIBES.map((v) => (
-          <Pill
-            key={v} on={vibes.includes(v)}
-            disabled={!vibes.includes(v) && vibes.length >= VIBES_MAX}
-            onClick={() => toggleVibe(v)}
-          >
-            {v}
-          </Pill>
-        ))}
+      <QSection title="How many people?" first={false}>
+        <div className="stepnum">
+          <button className="stepnum__btn" onClick={() => setPeople(answers.people - 1)} aria-label="Fewer">
+            <Icon name="minus" size={18} />
+          </button>
+          <span className="stepnum__val">{answers.people}</span>
+          <button className="stepnum__btn" onClick={() => setPeople(answers.people + 1)} aria-label="More">
+            <Icon name="plus" size={18} />
+          </button>
+          <span className="t-p-small muted" style={{ marginLeft: 12 }}>
+            {answers.people === 1 ? 'traveller' : 'travellers'}
+          </span>
+        </div>
       </QSection>
 
-      <QSection title="Total budget" hint="Per person">
-        {BUDGETS.map((b) => (
-          <Pill key={b.key} on={budget === b.key} onClick={() => setAnswer('budget', b.key)}>
-            {b.label} · {b.short}
-          </Pill>
-        ))}
-      </QSection>
-
-      <QSection title="What kind of stays do you want?" hint="Pick any that fit">
-        {STAY_TYPES.map((s) => (
-          <Pill key={s} on={stays.includes(s)} onClick={() => toggleStay(s)}>{s}</Pill>
+      <QSection title="How many days?">
+        {DAY_RANGES.map((d) => (
+          <Pill key={d} on={answers.dayRange === d} onClick={() => setAnswer('dayRange', d)}>{d}</Pill>
         ))}
       </QSection>
     </>
   )
 }
 
-/* 3 of 3 — food preference + anything else */
-function StepFood({ answers, setAnswer }) {
+/* ── Step 3 · Stays, transport, food ──────────────────────────── */
+function StepPreferences({ answers, setAnswer }) {
+  function toggleStay(s) {
+    const on = answers.stays.includes(s)
+    setAnswer('stays', on ? answers.stays.filter((x) => x !== s) : [...answers.stays, s])
+  }
+
   return (
     <>
-      <QSection title="What's your food preference?" first>
+      <h1 className="q-title">Where do you want to stay?</h1>
+      <div className="t-p-small muted" style={{ marginTop: 4 }}>Pick any that fit</div>
+      <div className="chips" style={{ marginTop: 14 }}>
+        {STAY_TYPES.map((s) => (
+          <Pill key={s} on={answers.stays.includes(s)} onClick={() => toggleStay(s)}>{s}</Pill>
+        ))}
+      </div>
+
+      <QSection title="How do you want to get around?">
+        <div className="opt-grid" style={{ width: '100%' }}>
+          {TRANSPORT_MODES.map((m) => (
+            <button
+              key={m.key}
+              className={`opt opt--tall${answers.transport === m.key ? ' is-sel' : ''}`}
+              onClick={() => setAnswer('transport', m.key)}
+            >
+              <span className="opt__icn"><Icon name={m.icon} size={20} /></span>
+              <span className="opt__label" style={{ fontWeight: 600 }}>{m.label}</span>
+              <span className="t-lb-sm muted">{m.sub}</span>
+            </button>
+          ))}
+        </div>
+      </QSection>
+
+      <QSection title="Any food preference?">
         {FOOD_PREFS.map((f) => (
           <Pill key={f} on={answers.food === f} onClick={() => setAnswer('food', f)}>{f}</Pill>
         ))}
       </QSection>
-
-      <div style={{ marginTop: 28 }}>
-        <h2 className="q-title q-title--sm">Anything else about the trip?</h2>
-        <textarea
-          className="textbox"
-          style={{ marginTop: 12, minHeight: 90 }}
-          placeholder="e.g. we're celebrating an anniversary, love street food, want to avoid long drives…"
-          value={answers.notes}
-          onChange={(e) => setAnswer('notes', e.target.value)}
-        />
-      </div>
     </>
   )
 }

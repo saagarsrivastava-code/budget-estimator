@@ -7,17 +7,17 @@ export function FlowProvider({ children }) {
   const [ideas, setIdeas] = useState('')
   const [sources, setSources] = useState([]) // keys from UPLOAD_TILES
 
-  // Questionnaire answers (5 steps)
+  // Guided planning answers (matches the flow diagram)
   const [answers, setAnswers] = useState({
-    party: 'Partner',
-    duration: '4–6 days',
-    month: 'December',
-    pace: 50,                              // 0 more free time … 100 packed
-    vibes: ['Food & dining', 'Hidden gems'],
-    budget: 'Mid-range',
-    stays: ['Hotels'],
-    food: 'No preference',
-    notes: '',
+    location: null,     // destination key from DESTINATIONS
+    cities: [],         // chosen city names (revealed after location)
+    activities: [],     // activity types (revealed after cities)
+    tripType: null,     // honeymoon / vacation / family / …
+    people: 2,          // number of travellers
+    dayRange: null,     // '2–4 days' | '5–6 days' | '7–8 days'
+    stays: [],          // stay types
+    transport: null,    // 'Public' | 'Private'
+    food: null,         // food preference
   })
   const setAnswer = useCallback((key, value) => setAnswers((a) => ({ ...a, [key]: value })), [])
 
