@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Screen } from '../components/Chrome.jsx'
 import Icon from '../components/Icon.jsx'
@@ -10,6 +10,8 @@ import {
 // Hide a broken banner image so its accent-gradient background shows instead.
 function hideImg(e) { e.currentTarget.style.display = 'none' }
 
+const LOAD_MSGS = ['Checking flights & stays', 'Pricing food & activities', 'Crunching your estimate']
+
 export default function Itineraries() {
   const navigate = useNavigate()
   const { answers } = useFlow()
@@ -18,6 +20,33 @@ export default function Itineraries() {
   const budget = useMemo(() => estimateBudget(answers), [answers])
   const variants = useMemo(() => buildItineraryVariants(answers), [answers])
   const [picked, setPicked] = useState('popular')
+
+  // Brief "estimating…" loader before revealing the budget.
+  const [ready, setReady] = useState(false)
+  const [msg, setMsg] = useState(0)
+  useEffect(() => {
+    const done = setTimeout(() => setReady(true), 2200)
+    const cycle = setInterval(() => setMsg((m) => Math.min(m + 1, LOAD_MSGS.length - 1)), 650)
+    return () => { clearTimeout(done); clearInterval(cycle) }
+  }, [])
+
+  if (!ready) {
+    return (
+      <Screen>
+        <div className="pad" style={{ paddingTop: 8 }}>
+          <button className="appbar__back" style={{ marginLeft: -8 }} onClick={() => navigate('/questions')} aria-label="Back"><Icon name="back" /></button>
+        </div>
+        <div className="estimator-load">
+          <div className="estimator-load__spin">
+            <span className="estimator-load__ring" />
+            <span className="estimator-load__orb"><Icon name="wallet" size={26} /></span>
+          </div>
+          <div className="t-hd-med" style={{ marginTop: 26 }}>Estimating your {dest?.label || 'trip'} budget</div>
+          <div className="estimator-load__msg t-p-small muted" key={msg}>{LOAD_MSGS[msg]}…</div>
+        </div>
+      </Screen>
+    )
+  }
 
   return (
     <Screen>

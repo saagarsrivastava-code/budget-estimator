@@ -818,6 +818,25 @@
 .counter-row .stepnum { gap: 12px; }
 .counter-row .stepnum__btn { width: 38px; height: 38px; }
 
+/* ── Itineraries — "estimating your budget" loader ────────────── */
+.estimator-load {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 0 40px 12vh;
+}
+.estimator-load__spin { position: relative; width: 92px; height: 92px; display: flex; align-items: center; justify-content: center; }
+.estimator-load__ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 3px solid var(--primary-scapia-100); border-top-color: var(--brand-primary);
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.estimator-load__orb {
+  width: 62px; height: 62px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff;
+  background: radial-gradient(120% 120% at 30% 22%, var(--primary-scapia-300), var(--brand-primary) 72%);
+  box-shadow: 0 8px 26px rgba(206, 62, 0, 0.35);
+}
+.estimator-load__msg { margin-top: 8px; animation: rise-in 0.3s ease both; }
+
 /* ── Itineraries — budget estimate card (simple) ──────────────── */
 .budget {
   margin-top: 18px; padding: 16px 18px;
