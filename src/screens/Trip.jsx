@@ -145,32 +145,46 @@ export default function Trip() {
   )
 }
 
-/* ── Bottom sheet — intro + (after a call) transcript ─────────── */
+/* ── Bottom sheet — intro (first time) or compact + transcript ── */
 function ExpertAISheet({ open, onClose, transcript, onStartCall }) {
   return (
-    <Sheet open={open} onClose={onClose} height={transcript ? '82%' : '68%'}>
-      <div className="ai-intro">
-        <span className="ai-orb ai-orb--sm"><Icon name="sparkle" size={24} /></span>
-        <div>
-          <div className="t-hd-med">{EXPERT_AI.name}</div>
-          <div className="t-p-small muted">{EXPERT_AI.tagline}</div>
-        </div>
-      </div>
-
-      <p className="t-p-small muted" style={{ marginTop: 12 }}>{EXPERT_AI.blurb}</p>
-
-      <div className="ai-stats">
-        {EXPERT_AI.stats.map((s) => (
-          <div key={s.label} className="ai-stat">
-            <div className="ai-stat__val">{s.value}</div>
-            <div className="ai-stat__lbl">{s.label}</div>
+    <Sheet open={open} onClose={onClose} height={transcript ? '78%' : '68%'}>
+      {transcript ? (
+        /* After a call — compact header, no blurb/stats */
+        <div className="ai-intro ai-intro--compact">
+          <span className="ai-orb ai-orb--sm"><Icon name="sparkle" size={20} /></span>
+          <div style={{ minWidth: 0 }}>
+            <div className="t-hd-sm">{EXPERT_AI.name}</div>
+            <div className="t-lb-sm muted">{EXPERT_AI.tagline}</div>
           </div>
-        ))}
-      </div>
+        </div>
+      ) : (
+        /* First time — full intro with the pitch */
+        <>
+          <div className="ai-intro">
+            <span className="ai-orb ai-orb--sm"><Icon name="sparkle" size={24} /></span>
+            <div>
+              <div className="t-hd-med">{EXPERT_AI.name}</div>
+              <div className="t-p-small muted">{EXPERT_AI.tagline}</div>
+            </div>
+          </div>
+
+          <p className="t-p-small muted" style={{ marginTop: 12 }}>{EXPERT_AI.blurb}</p>
+
+          <div className="ai-stats">
+            {EXPERT_AI.stats.map((s) => (
+              <div key={s.label} className="ai-stat">
+                <div className="ai-stat__val">{s.value}</div>
+                <div className="ai-stat__lbl">{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
       {transcript && (
         <>
-          <div className="section-label" style={{ marginTop: 20, marginBottom: 8 }}>Last call · transcript</div>
+          <div className="section-label" style={{ marginTop: 16, marginBottom: 8 }}>Last call · transcript</div>
           <div className="ai-transcript">
             {transcript.map((m, i) => (
               <div key={i} className="row" style={{ gap: 8, alignItems: 'flex-end', justifyContent: m.from === 'me' ? 'flex-end' : 'flex-start' }}>
