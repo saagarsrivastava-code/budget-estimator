@@ -109,7 +109,6 @@ export default function Itineraries() {
                   <span className="varcard__pace">{v.spots} · {v.pace} pace</span>
                   <div className="varcard__bannertext">
                     <div className="varcard__title">{v.title}</div>
-                    <div className="varcard__tag">{v.tag}</div>
                   </div>
                 </div>
 
