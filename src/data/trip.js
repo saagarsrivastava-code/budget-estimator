@@ -282,7 +282,6 @@ export const ACTIVITIES = [
 // Trip type — single select (icon + label option cards).
 export const TRIP_TYPES = [
   { key: 'Honeymoon',   label: 'Honeymoon',    icon: 'heart' },
-  { key: 'Vacation',    label: 'Vacation',     icon: 'sun' },
   { key: 'Family',      label: 'Family',       icon: 'users' },
   { key: 'Staycation',  label: 'Staycation',   icon: 'home' },
   { key: 'Bachelor',    label: 'Bachelor / ette', icon: 'sparkle' },
