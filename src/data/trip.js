@@ -285,7 +285,6 @@ export const TRIP_TYPES = [
   { key: 'Family',      label: 'Family',       icon: 'users' },
   { key: 'Staycation',  label: 'Staycation',   icon: 'home' },
   { key: 'Bachelor',    label: 'Bachelor / ette', icon: 'sparkle' },
-  { key: 'Solo',        label: 'Solo trip',    icon: 'user' },
 ]
 
 // Range of days — single select.
