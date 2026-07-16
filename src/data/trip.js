@@ -11,6 +11,11 @@ export const CATEGORIES = {
   transport: { label: 'Transport', color: 'var(--cat-transport)' },
 }
 
+// Icon shown as the photo fallback (and on pills) for each category.
+export const CAT_ICON = {
+  food: 'sparkle', culture: 'compass', nature: 'pin', stay: 'home', transport: 'car',
+}
+
 // The expert-built itinerary shown on the trip screen.
 export const TRIP = {
   destination: 'Thailand',
@@ -25,29 +30,105 @@ export const TRIP = {
       date: 'Mon 14 Dec',
       stops: [
         { id: 'fl1', flight: true, time: '06:15', name: 'Bengaluru → Phuket', sub: 'AirAsia · 1 stop · 7h 30m', option: '3 flight options', transitAfter: { mode: 'car', mins: 45 } },
-        { id: 's1', time: '09:30', name: 'Big Buddha Phuket', category: 'culture', transitAfter: { mode: 'walk', mins: 13 } },
-        { id: 's2', time: '13:00', name: 'Blue Elephant Restaurant', category: 'food', transitAfter: { mode: 'car', mins: 18 } },
-        { id: 's3', time: null, name: 'Kata Beach Resort & Spa', category: 'stay' },
+        { id: 's1', time: '09:30', name: 'Big Buddha Phuket', category: 'culture', image: IMG('1528181304800-259b08848526', 400), desc: '45-metre marble Buddha with island-wide views.', transitAfter: { mode: 'walk', mins: 13 } },
+        { id: 's2', time: '13:00', name: 'Blue Elephant Restaurant', category: 'food', image: IMG('1559314809-0d155014e29e', 400), desc: 'Royal Thai cuisine in a restored colonial mansion.', transitAfter: { mode: 'car', mins: 18 } },
+        { id: 's3', time: null, name: 'Kata Beach Resort & Spa', category: 'stay', image: IMG('1571003123894-1f0594d2b5d9', 400), desc: 'Beachfront resort with a spa, pool and sea views.' },
       ],
     },
     {
       label: 'Day 2 — Phuket',
       date: 'Tue 15 Dec',
       stops: [
-        { id: 's4', time: '09:00', name: 'Phi Phi Islands Day Tour', category: 'nature', transitAfter: { mode: 'car', mins: 9 } },
-        { id: 's5', time: '13:30', name: 'Wat Chalong', category: 'culture', transitAfter: { mode: 'car', mins: 22 } },
-        { id: 's6', time: '19:30', name: 'Bangla Road Night Market', category: 'food' },
+        { id: 's4', time: '09:00', name: 'Phi Phi Islands Day Tour', category: 'nature', image: IMG('1537956965359-7573183d1f57', 400), desc: 'Speedboat island-hopping and snorkelling.', transitAfter: { mode: 'car', mins: 9 } },
+        { id: 's5', time: '13:30', name: 'Wat Chalong', category: 'culture', image: IMG('1563492065599-3520f775eeed', 400), desc: "Phuket's grandest and most revered temple.", transitAfter: { mode: 'car', mins: 22 } },
+        { id: 's6', time: '19:30', name: 'Bangla Road Night Market', category: 'food', image: IMG('1504674900247-0877df9cc836', 400), desc: 'Buzzing night market and street-food lanes.' },
       ],
     },
     {
       label: 'Day 3 — Krabi',
       date: 'Wed 16 Dec',
       stops: [
-        { id: 's7', time: '10:00', name: 'Railay Beach Viewpoint', category: 'nature', transitAfter: { mode: 'walk', mins: 6 } },
-        { id: 's8', time: '15:00', name: 'Wat Tham Suea (Tiger Cave Temple)', category: 'culture' },
+        { id: 's7', time: '10:00', name: 'Railay Beach Viewpoint', category: 'nature', image: IMG('1507525428034-b723cf961d3e', 400), desc: 'Limestone cliffs over turquoise water.', transitAfter: { mode: 'walk', mins: 6 } },
+        { id: 's8', time: '15:00', name: 'Wat Tham Suea (Tiger Cave Temple)', category: 'culture', image: IMG('1552465011-b4e21bf6e79a', 400), desc: '1,237 steps to a cliff-top shrine and views.' },
       ],
     },
   ],
+}
+
+// Alternatives shown when a traveller edits a stop, grouped by the stop's
+// category. `prefs` are the preferences these options are ranked against
+// (surfaced in the editor). Each option has imagery, a short line always
+// shown, a `long` description revealed behind the info icon, and `tags`
+// explaining why it fits.
+export const EDIT_OPTIONS = {
+  culture: {
+    prefs: ['Culture & temples', 'Fewer crowds'],
+    options: [
+      { id: 'cu-oldtown', name: 'Old Phuket Town', category: 'culture', meta: 'Heritage walk · 2 hrs', match: 94, image: IMG('1555921015-5532091f6026', 600),
+        short: 'Sino-Portuguese streets, cafés and street art.',
+        long: 'Pastel shophouses, indie cafés and quiet temple lanes make Old Town the most atmospheric culture stop in Phuket. Best explored slowly on foot, away from the tour-bus crowds — a strong fit for your taste for fewer crowds.',
+        tags: ['Culture & temples', 'Fewer crowds'] },
+      { id: 'cu-freedom', name: 'Freedom Beach', category: 'nature', meta: 'Hidden cove · 30 min', match: 90, image: IMG('1537956965359-7573183d1f57', 600),
+        short: 'A quiet white-sand cove most tour groups skip.',
+        long: 'Reached by a short longtail ride or a steep jungle path, Freedom Beach stays calm even in peak season — clear water, soft sand and no vendors. A change of pace from temples for a quieter afternoon.',
+        tags: ['Fewer crowds', 'Nature'] },
+      { id: 'cu-chalong', name: 'Wat Chalong', category: 'culture', meta: 'Temple · 45 min', match: 82, image: IMG('1563492065599-3520f775eeed', 600),
+        short: "Phuket's grandest, most revered temple.",
+        long: "The island's most important Buddhist temple, richly gilded and busy with worshippers. Impressive, but it draws large crowds around midday — worth an early visit if you keep it on the plan.",
+        tags: ['Culture & temples'] },
+    ],
+  },
+  food: {
+    prefs: ['Local non-veg food', 'Fewer tourist traps'],
+    options: [
+      { id: 'fo-suay', name: 'Suay Restaurant', category: 'food', meta: 'Modern Thai · dinner', match: 96, image: IMG('1552566626-52f8b828add9', 600),
+        short: 'Chef-led modern Thai loved by locals.',
+        long: 'A local favourite away from the tourist strips, Suay does inventive southern-Thai plates and fresh seafood at fair prices. Exactly the kind of non-veg-forward, non-touristy spot your preferences lean toward.',
+        tags: ['Local non-veg food', 'Fewer tourist traps'] },
+      { id: 'fo-raya', name: 'Raya Restaurant', category: 'food', meta: 'Old-town Thai · lunch', match: 89, image: IMG('1414235077428-338989a2e8c0', 600),
+        short: 'Heritage-house southern Thai classics.',
+        long: 'Set in a century-old Sino-Portuguese mansion, Raya serves rich, old-school curries and crab dishes that regulars travel across the island for. Generous non-veg menu and bags of character.',
+        tags: ['Local non-veg food', 'Culture'] },
+      { id: 'fo-blue', name: 'Blue Elephant', category: 'food', meta: 'Fine dining · dinner', match: 80, image: IMG('1559314809-0d155014e29e', 600),
+        short: 'Royal Thai cuisine in a colonial mansion.',
+        long: 'A polished, higher-end take on royal Thai cooking in a grand restored mansion. Beautiful setting and refined plates, though pricier and more tourist-facing than the local spots.',
+        tags: ['Fine dining'] },
+    ],
+  },
+  nature: {
+    prefs: ['Beaches & nature', 'Private transfers'],
+    options: [
+      { id: 'na-phiphi', name: 'Phi Phi Islands Day Tour', category: 'nature', meta: 'Speedboat · full day', match: 95, image: IMG('1537956965359-7573183d1f57', 600),
+        short: 'Island-hopping, lagoons and snorkelling.',
+        long: 'A full day by private speedboat through Maya Bay, Pileh Lagoon and the best snorkelling reefs. The private-boat option matches your transfer preference and keeps you ahead of the big group tours.',
+        tags: ['Beaches & nature', 'Private transfers'] },
+      { id: 'na-james', name: 'James Bond Island', category: 'nature', meta: 'Sea canoe · full day', match: 88, image: IMG('1528127269322-539801943592', 600),
+        short: 'Sea-canoe among Phang Nga limestone karsts.',
+        long: 'Glide by canoe through sea caves and hidden lagoons beneath the towering limestone stacks of Phang Nga Bay. Dramatic scenery; a longer transfer, but private transport makes it comfortable.',
+        tags: ['Beaches & nature'] },
+      { id: 'na-coral', name: 'Coral Island (Koh Hae)', category: 'nature', meta: 'Half day · nearby', match: 84, image: IMG('1507525428034-b723cf961d3e', 600),
+        short: 'Close-by snorkelling and calm beaches.',
+        long: 'Just 15 minutes offshore, Coral Island is the easy option — clear shallow water, gentle beaches and good snorkelling without a long day out. Great if you want a relaxed, shorter outing.',
+        tags: ['Beaches & nature', 'Relaxed'] },
+    ],
+  },
+  stay: {
+    prefs: ['Beachfront', 'Comfortable'],
+    options: [
+      { id: 'st-kata', name: 'Kata Beach Resort & Spa', category: 'stay', meta: 'Beachfront · 4★', match: 93, image: IMG('1571003123894-1f0594d2b5d9', 600),
+        short: 'Beachfront resort with spa and pool.',
+        long: 'Right on Kata Beach with direct sand access, a large pool and a full spa. Comfortable, well-reviewed and central to the day plan — a reliable match for a beachfront, comfortable stay.',
+        tags: ['Beachfront', 'Comfortable'] },
+      { id: 'st-shore', name: 'The Shore at Katathani', category: 'stay', meta: 'Pool villas · 5★', match: 90, image: IMG('1582719478250-c89cae4dc85b', 600),
+        short: 'Adults-only clifftop pool villas.',
+        long: 'Private pool villas perched above Kata Noi with sweeping sea views and an adults-only, romance-first feel. A step up in comfort and privacy for a special-occasion night or two.',
+        tags: ['Comfortable', 'Sea views'] },
+      { id: 'st-panwa', name: 'Sri Panwa', category: 'stay', meta: 'Luxury villas · 5★', match: 85, image: IMG('1520250497591-112f2f40a3f4', 600),
+        short: 'Clifftop luxury pool villas.',
+        long: "One of Phuket's landmark luxury stays, with hillside pool villas and 270° ocean views from Cape Panwa. Stunning, but further from the day plan and at the top of the budget.",
+        tags: ['Luxury', 'Sea views'] },
+    ],
+  },
 }
 
 // ── Checkout — per-person cost breakdown (items + taxes = ₹50,000) ──

@@ -73,6 +73,10 @@
 .btn--ghost { background: transparent; color: var(--content-primary); border: 1.5px solid var(--border-strong); }
 .btn--ghost:active { background: var(--bg-secondary); }
 
+/* Black-outline CTA — secondary action, no fill */
+.btn--outline { background: var(--bg-primary); color: var(--content-primary); border: 1.5px solid var(--content-primary); box-shadow: none; }
+.btn--outline:active { background: var(--bg-secondary); }
+
 .btn--soft { background: var(--bg-secondary); color: var(--content-primary); }
 
 .btn--text { background: transparent; color: var(--content-secondary); box-shadow: none; }
@@ -757,17 +761,18 @@
 }
 .flightopt:active { background: var(--primary-scapia-000); }
 
-/* persistent highlight on a stop the expert has edited */
+/* persistent highlight on a stop the expert has edited — green "done" state
+   pairs with the green "Updated" badge */
 .stop--edited {
-  border-color: var(--primary-scapia-200);
-  background: linear-gradient(90deg, var(--primary-scapia-000), var(--bg-primary) 55%);
-  box-shadow: inset 3px 0 0 var(--brand-primary), var(--shadow-card);
+  border-color: var(--success-green-100);
+  background: linear-gradient(90deg, var(--success-green-000), var(--bg-primary) 55%);
+  box-shadow: inset 3px 0 0 var(--success-green-400), var(--shadow-card);
 }
-/* flash when the expert edits a stop from chat */
-.stop.is-updated { animation: stop-flash 2.6s ease; border-color: var(--primary-scapia-300); }
+/* flash when a stop is swapped */
+.stop.is-updated { animation: stop-flash 2.6s ease; border-color: var(--success-green-400); }
 @keyframes stop-flash {
-  0% { background: var(--primary-scapia-000); box-shadow: 0 0 0 4px var(--primary-scapia-000); }
-  60% { background: var(--primary-scapia-000); }
+  0% { background: var(--success-green-000); box-shadow: 0 0 0 4px var(--success-green-000); }
+  60% { background: var(--success-green-000); }
   100% { background: var(--bg-primary); box-shadow: var(--shadow-card); }
 }
 .msgs-strip {
@@ -958,4 +963,159 @@
 /* helpers */
 .stack-12 > * + * { margin-top: 12px; }
 .stack-10 > * + * { margin-top: 10px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   Imagery + stop editor
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Photo with a category-coloured gradient fallback behind the image.
+   The fallback icon paints first; a loaded <img> covers it. */
+.photo {
+  position: relative; display: block; overflow: hidden; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--cat), rgba(3, 18, 35, 0.35));
+}
+.photo__icn {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: #fff; opacity: 0.9;
+}
+.photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+/* Rich itinerary stop — thumbnail + copy + edit affordance */
+.stop--rich { align-items: flex-start; gap: 13px; }
+.stop__thumb { width: 60px; height: 60px; border-radius: var(--r-md); }
+.stop__time-lbl {
+  font: 600 11.5px/1 var(--font-body); letter-spacing: 0.03em; text-transform: uppercase;
+  color: var(--content-secondary);
+}
+.stop__name { margin-top: 4px; }
+.stop--rich .stop__name { font: 600 16px/1.25 var(--font-body); }
+.stop__desc {
+  margin-top: 4px; font: 400 12.5px/1.45 var(--font-body); color: var(--content-secondary);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.stop--rich .stop__edit { align-self: center; }
+
+/* Editor sheet — header */
+.edit-head { margin-top: 2px; }
+.edit-head .t-hd-med { margin-top: 2px; }
+
+/* Preference callout — states these options come from stated prefs */
+.pref-callout {
+  display: flex; gap: 11px; align-items: flex-start;
+  margin: 14px 0 18px; padding: 13px 14px;
+  border-radius: var(--r-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-opaque);
+}
+.pref-callout__icn {
+  flex-shrink: 0; width: 32px; height: 32px; border-radius: 10px;
+  background: var(--secondary-blue-000); color: var(--secondary-blue-500);
+  display: flex; align-items: center; justify-content: center;
+}
+.pref-callout__title { font: 700 13px/1.3 var(--font-body); color: var(--content-primary); }
+.pref-callout__chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.pref-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font: 600 11.5px/1 var(--font-body); color: var(--content-primary);
+  background: var(--bg-primary); border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill); padding: 5px 10px;
+}
+.pref-chip svg { color: var(--content-secondary); }
+
+/* Inline editor panel — revealed under a stop instead of a sheet */
+.editpanel__inner { padding: 12px 0 4px; }
+.editpanel .pref-callout { margin: 0 0 12px; }
+
+/* Stop being edited — blue "in progress" highlight + active edit button */
+.stop--editing { border-color: var(--secondary-blue-200); box-shadow: inset 0 0 0 1px var(--secondary-blue-200), var(--shadow-card); }
+.stop__edit.is-on { background: var(--secondary-blue-000); color: var(--secondary-blue-500); }
+
+/* Horizontal option rail — scrollable cards with a peek of the next one.
+   Mandatory snap keeps a card flush at the 16px inset; the last card snaps to
+   the right edge so it's always fully reachable (never clipped). */
+.optrail {
+  display: flex; gap: 12px; align-items: stretch;
+  overflow-x: auto; overflow-y: visible;
+  padding: 2px 16px 8px; margin: 0 -20px;
+  scroll-snap-type: x mandatory; scroll-padding: 0 16px;
+  -webkit-overflow-scrolling: touch;
+}
+.optrail::-webkit-scrollbar { height: 0; }
+
+/* Option card — fixed peek width; equal height via the rail's align-items:
+   stretch, with the CTA pinned to the bottom so short cards still line up */
+.optcard {
+  flex: 0 0 86%; max-width: 340px; scroll-snap-align: start; scroll-snap-stop: always;
+  display: flex; flex-direction: column;
+  border: 1px solid var(--border-opaque); border-radius: var(--r-lg);
+  background: var(--bg-primary); box-shadow: var(--shadow-card); overflow: hidden;
+}
+
+/* "View all" tile — last item in the stack; snaps to the right edge */
+.optrail__all {
+  flex: 0 0 132px; scroll-snap-align: end; scroll-snap-stop: always;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  border: 1.5px dashed var(--border-strong); border-radius: var(--r-lg);
+  background: var(--bg-primary); color: var(--content-primary);
+  padding: 16px 12px; text-align: center; font: 600 13px/1.35 var(--font-body);
+  transition: background 0.15s;
+}
+.optrail__all:active { background: var(--bg-secondary); }
+.optrail__allicn {
+  width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+  border: 1.5px solid var(--content-primary);
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Vertical option list — used inside the "View all" sheet */
+.optlist { display: flex; flex-direction: column; gap: 14px; padding-bottom: 8px; }
+.optlist .optcard { flex: none; width: 100%; max-width: none; }
+.optcard__banner { position: relative; height: 132px; }
+.optcard__photo { width: 100%; height: 100%; }
+.optcard__banner::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(3,18,35,0.28) 0%, rgba(3,18,35,0) 34%, rgba(3,18,35,0) 62%, rgba(3,18,35,0.34) 100%);
+}
+.optcard__top {
+  position: absolute; top: 10px; left: 10px; z-index: 1;
+  font: 700 10.5px/1 var(--font-body); letter-spacing: 0.03em; text-transform: uppercase;
+  color: #fff; background: var(--content-primary); border-radius: var(--r-pill); padding: 5px 10px;
+  box-shadow: 0 2px 8px rgba(3, 18, 35, 0.3);
+}
+.optcard__match {
+  position: absolute; bottom: 10px; right: 10px; z-index: 1;
+  display: inline-flex; align-items: center; gap: 4px;
+  font: 700 11.5px/1 var(--font-body); color: var(--content-primary);
+  background: rgba(255,255,255,0.94); border-radius: var(--r-pill); padding: 6px 10px;
+  box-shadow: 0 2px 8px rgba(3,18,35,0.18);
+}
+.optcard__match svg { color: var(--content-primary); }
+.optcard__body { padding: 13px 14px 15px; flex: 1; display: flex; flex-direction: column; }
+.optcard__name { font: 700 16px/1.25 var(--font-body); }
+.optcard__short { margin-top: 8px; font: 400 13.5px/1.5 var(--font-body); color: var(--content-secondary); }
+.optcard__long { overflow: hidden; }
+.optcard__long p {
+  margin-top: 9px; padding: 11px 12px; border-radius: var(--r-md);
+  background: var(--bg-secondary); border: 1px solid var(--border-opaque);
+  font: 400 13px/1.55 var(--font-body); color: var(--content-primary);
+}
+.optcard__tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 11px; margin-bottom: 14px; }
+.matchtag {
+  display: inline-flex; align-items: center; gap: 4px;
+  font: 500 11.5px/1 var(--font-body); color: var(--success-green-700);
+  background: var(--success-green-000); border: 1px solid var(--success-green-100);
+  border-radius: var(--r-pill); padding: 5px 9px;
+}
+.matchtag svg { color: var(--success-green-500); }
+.optcard__pick { margin-top: auto; }
+
+/* Info toggle button */
+.info-btn {
+  flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--content-secondary); border: 1px solid var(--border-opaque); background: var(--bg-primary);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.info-btn.is-on { color: var(--secondary-blue-500); border-color: var(--secondary-blue-200); background: var(--secondary-blue-000); }
+.info-btn:active { transform: scale(0.94); }
 .stack-8 > * + * { margin-top: 8px; }
