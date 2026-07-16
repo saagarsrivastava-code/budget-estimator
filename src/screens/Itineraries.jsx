@@ -129,7 +129,7 @@ export default function Itineraries() {
 
                   <button
                     className="varcard__edit"
-                    onClick={(e) => { e.stopPropagation(); setPicked(v.key); navigate('/trip?tab=chat') }}
+                    onClick={(e) => { e.stopPropagation(); setPicked(v.key); navigate('/trip') }}
                   >
                     <Icon name="pencil" size={16} /> Edit itinerary
                   </button>
