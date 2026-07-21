@@ -879,16 +879,27 @@
 .budget--main .budget__note { justify-content: center; margin-top: 12px; text-align: left; }
 .costcard {
   display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; text-align: left;
-  padding: 15px 16px; border: 1px solid var(--border-opaque); border-radius: var(--r-md);
+  padding: 13px 16px; border: 1px solid var(--border-opaque); border-radius: var(--r-md);
   background: var(--bg-primary); box-shadow: var(--shadow-card); transition: transform 0.12s;
 }
 .costcard:active { transform: scale(0.99); }
+.costcard__main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .costcard__label {
   display: inline-flex; align-items: center; gap: 7px;
-  font-size: 14px; font-weight: 500; color: var(--content-primary);
+  font-size: 14px; font-weight: 600; color: var(--content-primary);
 }
 .costcard__label svg { color: var(--content-tertiary); }
+.costcard__sub { font-size: 12px; color: var(--content-secondary); }
 .costcard__amt { font: 700 15px/1 var(--font-body); color: var(--content-primary); white-space: nowrap; }
+
+/* Main-card chips — the choices the estimate is built from */
+.budget__chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 14px; }
+.budget__chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11.5px; font-weight: 500; color: var(--content-secondary);
+  background: var(--bg-primary); border: 1px solid var(--border-opaque); border-radius: var(--r-pill); padding: 4px 9px;
+}
+.budget__chip svg { color: var(--content-tertiary); }
 
 /* Reason-behind-pricing sheet */
 .whysheet { padding-bottom: 4px; }
@@ -898,6 +909,33 @@
   display: flex; align-items: center; justify-content: center;
   background: var(--primary-scapia-000); color: var(--brand-primary); border: 1px solid var(--primary-scapia-100);
 }
+.whysheet__subhead {
+  margin-top: 18px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--content-tertiary);
+}
+
+/* Flight price-trend mini chart */
+.trend { display: flex; align-items: flex-end; gap: 10px; margin-top: 12px; height: 140px; }
+.trend__col { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; }
+.trend__val { font-size: 11px; font-weight: 700; color: var(--content-secondary); margin-bottom: 6px; }
+.trend__track { flex: 1; width: 100%; display: flex; align-items: flex-end; }
+.trend__bar { width: 100%; border-radius: 8px 8px 4px 4px; background: var(--neutral-grey-300); min-height: 6px; transition: height 0.3s; }
+.trend__lbl { font-size: 11px; color: var(--content-tertiary); margin-top: 8px; }
+.trend__col.is-now .trend__bar { background: var(--brand-primary); }
+.trend__col.is-now .trend__val { color: var(--brand-primary); }
+.trend__note {
+  display: flex; align-items: flex-start; gap: 7px; margin-top: 14px;
+  font-size: 12.5px; line-height: 1.4; color: var(--content-secondary);
+}
+.trend__note svg { color: var(--brand-primary); flex-shrink: 0; margin-top: 2px; }
+
+/* Bullet breakdown in the reason sheet */
+.whylist { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+.whylist li {
+  display: flex; align-items: flex-start; gap: 9px; list-style: none;
+  font-size: 14px; line-height: 1.4; color: var(--content-primary);
+}
+.whylist li svg { color: var(--feedback-positive); flex-shrink: 0; margin-top: 3px; }
 
 /* "Start planning this trip" — component option picker */
 .buildsec { margin-top: 24px; }

@@ -7,6 +7,7 @@ import { useFlow } from '../state/FlowContext.jsx'
 import { DESTINATIONS, estimateBudget, fmtINR } from '../data/trip.js'
 
 const LOAD_MSGS = ['Checking flights & stays', 'Pricing food & activities', 'Crunching your estimate']
+const shortINR = (n) => `₹${Math.round(n / 1000)}k`
 
 export default function Itineraries() {
   const navigate = useNavigate()
@@ -15,6 +16,15 @@ export default function Itineraries() {
   const dest = DESTINATIONS.find((d) => d.key === answers.location)
   const budget = useMemo(() => estimateBudget(answers), [answers])
   const [why, setWhy] = useState(null) // budget part whose reason sheet is open
+
+  // Chips summarising the choices this estimate is built from.
+  const chips = [
+    answers.cities?.length && { icon: 'pin', text: answers.cities.join(' · ') },
+    ...(answers.activities || []).map((a) => ({ text: a })),
+    ...(answers.stays || []).map((s) => ({ icon: 'home', text: s })),
+    answers.transport && { icon: answers.transport === 'Private' ? 'car' : 'metro', text: `${answers.transport} transport` },
+    answers.food && answers.food !== 'No preference' && { text: answers.food },
+  ].filter(Boolean)
 
   // Brief "estimating…" loader before revealing the budget.
   const [ready, setReady] = useState(false)
@@ -63,13 +73,22 @@ export default function Itineraries() {
           ].filter(Boolean).join(' · ')}
         </div>
 
-        {/* Main card — the overall estimate */}
+        {/* Main card — the overall estimate + the choices it's built from */}
         <div className="budget budget--main rise">
           <div className="budget__label">Estimated budget · per person</div>
           <div className="budget__range">{fmtINR(budget.low)} <span>–</span> {fmtINR(budget.high)}</div>
+          {chips.length > 0 && (
+            <div className="budget__chips">
+              {chips.map((c, i) => (
+                <span key={i} className="budget__chip">
+                  {c.icon && <Icon name={c.icon} size={12} />}{c.text}
+                </span>
+              ))}
+            </div>
+          )}
           <div className="budget__note">
             <Icon name="sparkle" size={14} />
-            A ballpark from your choices — tap any card to see how it's priced.
+            Built from your choices — tap any card to see how it's priced.
           </div>
         </div>
 
@@ -83,7 +102,10 @@ export default function Itineraries() {
               style={{ animationDelay: `${0.05 + i * 0.05}s` }}
               onClick={() => setWhy(p)}
             >
-              <span className="costcard__label">{p.label}<Icon name="info" size={15} /></span>
+              <div className="costcard__main">
+                <span className="costcard__label">{p.label}<Icon name="info" size={15} /></span>
+                {p.sub && <span className="costcard__sub">{p.sub}</span>}
+              </div>
               <span className="costcard__amt">{fmtINR(p.amount)}</span>
             </button>
           ))}
@@ -94,7 +116,7 @@ export default function Itineraries() {
         <Button full variant="dark" onClick={() => navigate('/build')}>Start planning this trip</Button>
       </Footer>
 
-      {/* Reason-behind-pricing bottom sheet */}
+      {/* Reason-behind-pricing bottom sheet — richer per component */}
       <Sheet open={!!why} onClose={() => setWhy(null)} height="auto">
         {why && (
           <div className="whysheet">
@@ -105,7 +127,40 @@ export default function Itineraries() {
               </div>
               <span className="whysheet__icn"><Icon name="wallet" size={20} /></span>
             </div>
+
             <p className="t-p-med" style={{ marginTop: 14, color: 'var(--content-secondary)' }}>{why.why}</p>
+
+            {/* Flights → price trend chart */}
+            {why.detail?.trend && (
+              <>
+                <div className="whysheet__subhead">Price trend · by booking window</div>
+                <div className="trend">
+                  {why.detail.trend.map((t) => {
+                    const max = Math.max(...why.detail.trend.map((x) => x.value))
+                    const isNow = t.value === why.amount
+                    return (
+                      <div key={t.label} className={`trend__col${isNow ? ' is-now' : ''}`}>
+                        <div className="trend__val">{shortINR(t.value)}</div>
+                        <div className="trend__track">
+                          <div className="trend__bar" style={{ height: `${Math.round((t.value / max) * 100)}%` }} />
+                        </div>
+                        <div className="trend__lbl">{t.label}</div>
+                      </div>
+                    )
+                  })}
+                </div>
+                <div className="trend__note"><Icon name="sparkle" size={13} />{why.detail.note}</div>
+              </>
+            )}
+
+            {/* Others → bullet breakdown */}
+            {why.detail?.bullets && (
+              <ul className="whylist">
+                {why.detail.bullets.map((b) => (
+                  <li key={b}><Icon name="check" size={13} />{b}</li>
+                ))}
+              </ul>
+            )}
           </div>
         )}
       </Sheet>

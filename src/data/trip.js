@@ -326,23 +326,71 @@ export function estimateBudget(answers) {
   const typeBump = tripType === 'Honeymoon' ? 1.25 : tripType === 'Bachelor' ? 1.15 : 1
   const base = (flights + stayTotal + groundTotal) * typeBump
 
+  const nights = Math.max(1, Math.round(days) - 1)
+  const wholeDays = Math.round(days)
+  const foodTotal = Math.round(foodPerDay * days)
+  const actTotal = Math.round(activitiesPerDay * days)
+  const transferTotal = Math.round(transferPerDay * days)
+
   return {
     low: Math.round((base * 0.9) / 1000) * 1000,
     high: Math.round((base * 1.15) / 1000) * 1000,
     days,
     parts: [
-      { label: 'Flights · return', amount: flights,
-        why: `Return economy airfare to ${destLabel}, based on typical prices for your travel window. Booking earlier usually brings this down.` },
-      { label: `Stays · ${Math.max(1, Math.round(days) - 1)} nights`, amount: stayTotal,
-        why: `Estimated from your preferred stay type${stays.length ? ` (${stays.join(', ').toLowerCase()})` : ''} across ${Math.max(1, Math.round(days) - 1)} nights. Resorts and villas sit higher; hostels and homestays lower.` },
-      { label: 'Food & dining', amount: Math.round(foodPerDay * days),
-        why: `A daily food allowance of about ${fmtINR(foodPerDay)}/day — a mix of local spots and street eats, with room for a few nicer meals.` },
-      { label: 'Activities & entries', amount: Math.round(activitiesPerDay * days),
-        why: `Entry fees, tours and experiences budgeted at roughly ${fmtINR(activitiesPerDay)}/day, matched to your ${tripType ? tripType.toLowerCase() : 'trip'} pace.` },
-      { label: 'Local transfers', amount: Math.round(transferPerDay * days),
+      {
+        label: 'Flights · return', amount: flights, kind: 'flights',
+        sub: `Return economy to ${destLabel}`,
+        why: `Return economy airfare to ${destLabel}, based on typical prices for your travel window. Booking earlier usually brings this down.`,
+        detail: {
+          trend: [
+            { label: '8 wks', value: Math.round(flights * 0.82 / 500) * 500 },
+            { label: '4 wks', value: flights },
+            { label: '2 wks', value: Math.round(flights * 1.22 / 500) * 500 },
+            { label: '1 wk', value: Math.round(flights * 1.5 / 500) * 500 },
+          ],
+          note: 'Fares climb the closer you get — booking around 8 weeks out is usually cheapest.',
+        },
+      },
+      {
+        label: `Stays · ${nights} nights`, amount: stayTotal, kind: 'stays',
+        sub: stays.length ? stays.join(', ') : 'Hotels',
+        why: `Estimated from your preferred stay type${stays.length ? ` (${stays.join(', ').toLowerCase()})` : ''} across ${nights} nights. Resorts and villas sit higher; hostels and homestays lower.`,
+        detail: { bullets: [
+          `About ${fmtINR(stayTier)} a night × ${nights} nights`,
+          stays.length ? `Matched to your pick — ${stays.join(', ').toLowerCase()}` : 'Standard 3–4★ hotels',
+          'Free-cancellation rates where available',
+        ] },
+      },
+      {
+        label: 'Food & dining', amount: foodTotal, kind: 'food',
+        sub: `≈ ${fmtINR(foodPerDay)} a day`,
+        why: `A daily food allowance of about ${fmtINR(foodPerDay)}/day — a mix of local spots and street eats, with room for a few nicer meals.`,
+        detail: { bullets: [
+          `≈ ${fmtINR(foodPerDay)} a day × ${wholeDays} days`,
+          'Street eats, cafés and a few sit-down dinners',
+          'Drinks and snacks factored in',
+        ] },
+      },
+      {
+        label: 'Activities & entries', amount: actTotal, kind: 'activities',
+        sub: `≈ ${fmtINR(activitiesPerDay)} a day`,
+        why: `Entry fees, tours and experiences budgeted at roughly ${fmtINR(activitiesPerDay)}/day, matched to your ${tripType ? tripType.toLowerCase() : 'trip'} pace.`,
+        detail: { bullets: [
+          `≈ ${fmtINR(activitiesPerDay)} a day of entries & experiences`,
+          'Tours, entry tickets and guided experiences',
+          'Pick exactly what you want on the next screen',
+        ] },
+      },
+      {
+        label: 'Local transfers', amount: transferTotal, kind: 'transfers',
+        sub: transport === 'Private' ? 'Private cabs' : 'Mostly public transport',
         why: transport === 'Private'
           ? 'Private cabs and airport transfers for door-to-door convenience — the pricier but easiest way to get around.'
-          : 'Mostly public transport (metro, buses, trains) with the occasional cab — the economical way to get around.' },
+          : 'Mostly public transport (metro, buses, trains) with the occasional cab — the economical way to get around.',
+        detail: { bullets: transport === 'Private'
+          ? ['Airport transfers plus private cabs', `≈ ${fmtINR(transferPerDay)} a day`, 'Door-to-door, no waiting around']
+          : ['Metro, buses & trains with the odd cab', `≈ ${fmtINR(transferPerDay)} a day`, 'The most economical way around'] },
+      },
     ],
   }
 }
