@@ -854,13 +854,72 @@
 .budget__label { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--content-secondary); }
 .budget__range { font: 800 28px/1.1 var(--font-body); letter-spacing: -0.015em; margin-top: 8px; color: var(--content-primary); }
 .budget__range span { color: var(--content-tertiary); font-weight: 500; }
-.budget__parts { margin-top: 14px; border-top: 1px solid var(--border-opaque); padding-top: 6px; }
+.budget__parts { margin-top: 14px; border-top: 1px solid var(--border-opaque); padding-top: 2px; }
 .budget__part { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; }
+.budget__part--btn {
+  width: 100%; text-align: left; background: transparent; border: none;
+  border-bottom: 1px solid var(--border-opaque); padding: 10px 0; cursor: pointer;
+}
+.budget__parts .budget__part--btn:last-child { border-bottom: none; }
+.budget__part--btn:active { opacity: 0.6; }
+.budget__partlabel {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--content-secondary);
+}
+.budget__partlabel svg { color: var(--content-tertiary); }
 .budget__note {
   display: flex; align-items: center; gap: 7px; margin-top: 10px;
   font-size: 12px; color: var(--content-secondary);
 }
 .budget__note svg { color: var(--brand-primary); flex-shrink: 0; }
+
+/* Reason-behind-pricing sheet */
+.whysheet { padding-bottom: 4px; }
+.whysheet__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.whysheet__icn {
+  flex-shrink: 0; width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--primary-scapia-000); color: var(--brand-primary); border: 1px solid var(--primary-scapia-100);
+}
+
+/* "Start planning this trip" — component option picker */
+.buildsec { margin-top: 24px; }
+.buildsec:first-of-type { margin-top: 20px; }
+.buildsec__head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.buildopt {
+  display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+  border: 1.5px solid var(--border-opaque); border-radius: var(--r-md);
+  background: var(--bg-primary); padding: 10px 12px; transition: border-color 0.15s, background 0.15s;
+}
+.buildopt.is-sel { border-color: var(--brand-primary); background: var(--primary-scapia-000); }
+.buildopt__thumb { width: 46px; height: 46px; border-radius: 10px; flex-shrink: 0; }
+.buildopt__icn {
+  width: 46px; height: 46px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-secondary); color: var(--content-secondary);
+}
+.buildopt__body { flex: 1; min-width: 0; }
+.buildopt__name { font: 600 14px/1.25 var(--font-body); display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.buildopt__tag {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase;
+  color: var(--brand-primary); background: var(--primary-scapia-000);
+  border: 1px solid var(--primary-scapia-100); border-radius: var(--r-pill); padding: 2px 7px;
+}
+.buildopt__meta { font-size: 12px; color: var(--content-secondary); margin-top: 3px; }
+.buildopt__right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+.buildopt__price { font: 700 13px/1 var(--font-body); color: var(--content-primary); white-space: nowrap; }
+.buildopt__sel {
+  width: 22px; height: 22px; flex-shrink: 0; border: 2px solid var(--border-strong);
+  background: var(--bg-primary); color: #fff; display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+.buildopt__sel--radio { border-radius: 50%; }
+.buildopt__sel--check { border-radius: 6px; }
+.buildopt__sel.is-on { background: var(--brand-primary); border-color: var(--brand-primary); }
+
+/* Build footer — running total + CTA */
+.buildbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; }
+.buildbar .btn { flex-shrink: 0; }
 
 /* ── Itineraries — plan cards with imagery ────────────────────── */
 .varcard {

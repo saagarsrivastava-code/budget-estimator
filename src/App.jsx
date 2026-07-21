@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import Landing from './screens/Landing.jsx'
 import Questions from './screens/Questions.jsx'
 import Itineraries from './screens/Itineraries.jsx'
+import Build from './screens/Build.jsx'
 import Trip from './screens/Trip.jsx'
 import Checkout from './screens/Checkout.jsx'
 
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/questions" element={<Questions />} />
         <Route path="/itineraries" element={<Itineraries />} />
+        <Route path="/build" element={<Build />} />
         <Route path="/trip" element={<Trip />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="*" element={<Landing />} />

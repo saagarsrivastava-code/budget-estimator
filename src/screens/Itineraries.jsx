@@ -1,14 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Screen } from '../components/Chrome.jsx'
+import { Screen, Footer } from '../components/Chrome.jsx'
+import { Button, Sheet } from '../components/ui.jsx'
 import Icon from '../components/Icon.jsx'
 import { useFlow } from '../state/FlowContext.jsx'
-import {
-  DESTINATIONS, estimateBudget, buildItineraryVariants, fmtINR,
-} from '../data/trip.js'
-
-// Hide a broken banner image so its accent-gradient background shows instead.
-function hideImg(e) { e.currentTarget.style.display = 'none' }
+import { DESTINATIONS, estimateBudget, fmtINR } from '../data/trip.js'
 
 const LOAD_MSGS = ['Checking flights & stays', 'Pricing food & activities', 'Crunching your estimate']
 
@@ -18,8 +14,7 @@ export default function Itineraries() {
 
   const dest = DESTINATIONS.find((d) => d.key === answers.location)
   const budget = useMemo(() => estimateBudget(answers), [answers])
-  const variants = useMemo(() => buildItineraryVariants(answers), [answers])
-  const [picked, setPicked] = useState('popular')
+  const [why, setWhy] = useState(null) // budget part whose reason sheet is open
 
   // Brief "estimating…" loader before revealing the budget.
   const [ready, setReady] = useState(false)
@@ -54,7 +49,7 @@ export default function Itineraries() {
         <button className="appbar__back" style={{ marginLeft: -8 }} onClick={() => navigate('/questions')} aria-label="Back"><Icon name="back" /></button>
       </div>
 
-      <div className="screen-body pad" style={{ paddingTop: 8, paddingBottom: 28 }}>
+      <div className="screen-body pad" style={{ paddingTop: 8, paddingBottom: 24 }}>
         <h1 className="t-hd-large">
           Your {dest?.label || 'trip'} plan
         </h1>
@@ -68,76 +63,44 @@ export default function Itineraries() {
           ].filter(Boolean).join(' · ')}
         </div>
 
-        {/* Budget estimate — kept simple */}
+        {/* Estimated budget — each line taps to reveal why it's priced that way */}
         <div className="budget rise">
-          <div className="budget__label">Estimated budget</div>
+          <div className="budget__label">Estimated budget · per person</div>
           <div className="budget__range">{fmtINR(budget.low)} <span>–</span> {fmtINR(budget.high)}</div>
           <div className="budget__parts">
             {budget.parts.map((p) => (
-              <div key={p.label} className="budget__part">
-                <span className="t-p-small muted">{p.label}</span>
+              <button key={p.label} className="budget__part budget__part--btn" onClick={() => setWhy(p)}>
+                <span className="budget__partlabel">{p.label}<Icon name="info" size={14} /></span>
                 <span className="t-p-small" style={{ fontWeight: 600 }}>{fmtINR(p.amount)}</span>
-              </div>
+              </button>
             ))}
           </div>
           <div className="budget__note">
             <Icon name="sparkle" size={14} />
-            A ballpark from your choices — the plans below fine-tune it.
+            A ballpark from your choices — tap any line to see how it's priced.
           </div>
         </div>
-
-        {/* Itinerary variants — each with imagery + its own edit CTA */}
-        <div className="section-label" style={{ marginTop: 24 }}>Pick a starting plan</div>
-        <div className="stack-12">
-          {variants.map((v, i) => {
-            const on = picked === v.key
-            // Per-plan cost: relaxed trims paid activities, classics is the fullest.
-            const cost = { popular: budget.high, offbeat: Math.round((budget.low + budget.high) / 2000) * 1000, relaxed: budget.low }[v.key] || budget.low
-            const daysLabel = answers.dayRange || `${Math.round(budget.days)} days`
-            return (
-              <div
-                key={v.key}
-                className={`varcard rise${on ? ' is-sel' : ''}`}
-                style={{ animationDelay: `${0.08 + i * 0.07}s` }}
-                onClick={() => setPicked(v.key)}
-                role="button"
-                tabIndex={0}
-              >
-                <div className="varcard__banner" style={{ background: v.accent }}>
-                  <img className="varcard__img" src={v.image} onError={hideImg} alt="" />
-                  <span className="varcard__overlay" />
-                  <span className="varcard__pace">{v.spots} · {v.pace} pace</span>
-                  <div className="varcard__bannertext">
-                    <div className="varcard__title">{v.title}</div>
-                  </div>
-                </div>
-
-                <div className="varcard__body">
-                  <div className="varcard__price">
-                    <span className="varcard__price-amt">{fmtINR(cost)}</span>
-                    <span className="varcard__price-unit">/ person</span>
-                    <span className="varcard__price-days"><Icon name="clock" size={13} />{daysLabel}</span>
-                  </div>
-                  <div className="varcard__cities"><Icon name="route" size={13} />{v.cityLine}</div>
-
-                  <ul className="varcard__list">
-                    {v.highlights.slice(0, 2).map((h) => (
-                      <li key={h}><Icon name="check" size={12} />{h}</li>
-                    ))}
-                  </ul>
-
-                  <button
-                    className="varcard__edit"
-                    onClick={(e) => { e.stopPropagation(); setPicked(v.key); navigate('/trip') }}
-                  >
-                    <Icon name="pencil" size={16} /> Edit itinerary
-                  </button>
-                </div>
-              </div>
-            )
-          })}
-        </div>
       </div>
+
+      <Footer>
+        <Button full variant="dark" onClick={() => navigate('/build')}>Start planning this trip</Button>
+      </Footer>
+
+      {/* Reason-behind-pricing bottom sheet */}
+      <Sheet open={!!why} onClose={() => setWhy(null)} height="auto">
+        {why && (
+          <div className="whysheet">
+            <div className="whysheet__head">
+              <div>
+                <div className="t-lb-sm muted">{why.label}</div>
+                <div className="t-hd-med" style={{ marginTop: 2 }}>{fmtINR(why.amount)} <span className="t-p-small muted" style={{ fontWeight: 400 }}>/ person</span></div>
+              </div>
+              <span className="whysheet__icn"><Icon name="wallet" size={20} /></span>
+            </div>
+            <p className="t-p-med" style={{ marginTop: 14, color: 'var(--content-secondary)' }}>{why.why}</p>
+          </div>
+        )}
+      </Sheet>
     </Screen>
   )
 }

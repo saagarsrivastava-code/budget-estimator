@@ -310,6 +310,7 @@ export function estimateBudget(answers) {
   const { location, dayRange, stays = [], transport, tripType } = answers
   const days = DAY_RANGE_MID[dayRange] || 5
   const flights = FLIGHT_COST[location] || 24000
+  const destLabel = (DESTINATIONS.find((d) => d.key === location) || {}).label || 'your destination'
 
   // Stay tier — pick the priciest chosen stay type.
   const stayTier = stays.some((s) => ['Resorts', 'Villas', 'Boutique stays'].includes(s)) ? 7000
@@ -330,11 +331,18 @@ export function estimateBudget(answers) {
     high: Math.round((base * 1.15) / 1000) * 1000,
     days,
     parts: [
-      { label: 'Flights · return', amount: flights },
-      { label: `Stays · ${Math.max(1, Math.round(days) - 1)} nights`, amount: stayTotal },
-      { label: 'Food & dining', amount: Math.round(foodPerDay * days) },
-      { label: 'Activities & entries', amount: Math.round(activitiesPerDay * days) },
-      { label: 'Local transfers', amount: Math.round(transferPerDay * days) },
+      { label: 'Flights · return', amount: flights,
+        why: `Return economy airfare to ${destLabel}, based on typical prices for your travel window. Booking earlier usually brings this down.` },
+      { label: `Stays · ${Math.max(1, Math.round(days) - 1)} nights`, amount: stayTotal,
+        why: `Estimated from your preferred stay type${stays.length ? ` (${stays.join(', ').toLowerCase()})` : ''} across ${Math.max(1, Math.round(days) - 1)} nights. Resorts and villas sit higher; hostels and homestays lower.` },
+      { label: 'Food & dining', amount: Math.round(foodPerDay * days),
+        why: `A daily food allowance of about ${fmtINR(foodPerDay)}/day — a mix of local spots and street eats, with room for a few nicer meals.` },
+      { label: 'Activities & entries', amount: Math.round(activitiesPerDay * days),
+        why: `Entry fees, tours and experiences budgeted at roughly ${fmtINR(activitiesPerDay)}/day, matched to your ${tripType ? tripType.toLowerCase() : 'trip'} pace.` },
+      { label: 'Local transfers', amount: Math.round(transferPerDay * days),
+        why: transport === 'Private'
+          ? 'Private cabs and airport transfers for door-to-door convenience — the pricier but easiest way to get around.'
+          : 'Mostly public transport (metro, buses, trains) with the occasional cab — the economical way to get around.' },
     ],
   }
 }
@@ -411,6 +419,48 @@ export function buildItineraryVariants(answers) {
       cityLine,
     },
   ]
+}
+
+// ════════════════════════════════════════════════════════════════
+//  "Start planning this trip" — pick an option per component.
+//  Flights & stays are single-select; activities & transfers multi.
+// ════════════════════════════════════════════════════════════════
+export const BUILD_FLIGHTS = [
+  { id: 'fl-value', name: 'IndiGo', meta: 'Dep 22:10 · 1 stop · 8h 10m', price: 19500, tag: 'Best value' },
+  { id: 'fl-cheap', name: 'AirAsia', meta: 'Dep 06:15 · 1 stop · 7h 30m', price: 22000, tag: 'Popular' },
+  { id: 'fl-fast', name: 'Thai Airways', meta: 'Dep 09:40 · non-stop · 4h 20m', price: 31000, tag: 'Fastest' },
+]
+
+export const BUILD_STAYS = [
+  { id: 'st-kata', name: 'Kata Beach Resort & Spa', meta: 'Beachfront · 4★', price: 4500, unit: '/night', category: 'stay', image: IMG('1571003123894-1f0594d2b5d9', 400), tag: 'Recommended' },
+  { id: 'st-shore', name: 'The Shore at Katathani', meta: 'Pool villas · 5★', price: 9000, unit: '/night', category: 'stay', image: IMG('1582719478250-c89cae4dc85b', 400) },
+  { id: 'st-panwa', name: 'Sri Panwa', meta: 'Luxury villas · 5★', price: 15000, unit: '/night', category: 'stay', image: IMG('1520250497591-112f2f40a3f4', 400) },
+]
+
+export const BUILD_ACTIVITIES = [
+  { id: 'ac-phiphi', name: 'Phi Phi Islands day tour', meta: 'Speedboat · full day', price: 4500, category: 'nature', image: IMG('1537956965359-7573183d1f57', 400) },
+  { id: 'ac-oldtown', name: 'Old Phuket Town heritage walk', meta: 'Half day · guided', price: 800, category: 'culture', image: IMG('1555921015-5532091f6026', 400) },
+  { id: 'ac-temples', name: 'Big Buddha & Wat Chalong', meta: 'Temples · half day', price: 500, category: 'culture', image: IMG('1528181304800-259b08848526', 400) },
+  { id: 'ac-cooking', name: 'Thai cooking class', meta: 'Evening · 3 hrs', price: 2200, category: 'food', image: IMG('1504674900247-0877df9cc836', 400) },
+  { id: 'ac-tiger', name: 'Tiger Cave Temple hike', meta: '1,237 steps · morning', price: 300, category: 'nature', image: IMG('1552465011-b4e21bf6e79a', 400) },
+]
+
+export const BUILD_TRANSFERS = [
+  { id: 'tr-airport', name: 'Airport pickup & drop', meta: 'Private cab · both ways', price: 1500, category: 'transport' },
+  { id: 'tr-daycar', name: 'Private car for day trips', meta: 'Driver · per day', price: 2000, unit: '/day', category: 'transport' },
+  { id: 'tr-intercity', name: 'Phuket ↔ Krabi transfer', meta: 'Private van · one way', price: 3000, category: 'transport' },
+  { id: 'tr-scooter', name: 'Scooter rental', meta: 'Self-ride · per day', price: 500, unit: '/day', category: 'transport' },
+]
+
+// Which options to pre-select when the build screen opens, from the answers.
+export function defaultBuildSelection(answers) {
+  const wantsPrivate = answers.transport === 'Private'
+  return {
+    flight: 'fl-value',
+    stay: answers.stays?.some((s) => ['Resorts', 'Villas', 'Boutique stays'].includes(s)) ? 'st-shore' : 'st-kata',
+    activities: ['ac-phiphi', 'ac-temples'],
+    transfers: wantsPrivate ? ['tr-airport', 'tr-daycar'] : ['tr-airport'],
+  }
 }
 
 // ── Planning screen — checklist derived from stated preferences ─
