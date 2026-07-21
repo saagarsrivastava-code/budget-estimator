@@ -886,7 +886,7 @@
 .costcard__icn {
   flex-shrink: 0; width: 40px; height: 40px; border-radius: 11px;
   display: flex; align-items: center; justify-content: center;
-  background: var(--primary-scapia-000); color: var(--brand-primary); border: 1px solid var(--primary-scapia-100);
+  background: var(--bg-secondary); color: var(--content-secondary); border: 1px solid var(--border-opaque);
 }
 .costcard__main { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
 .costcard__label {
