@@ -307,10 +307,11 @@ const FLIGHT_COST = {
 
 // A transparent, per-person budget estimate derived from the answers.
 export function estimateBudget(answers) {
-  const { location, dayRange, stays = [], transport, tripType } = answers
+  const { location, cities = [], dayRange, stays = [], transport, tripType } = answers
   const days = DAY_RANGE_MID[dayRange] || 5
   const flights = FLIGHT_COST[location] || 24000
   const destLabel = (DESTINATIONS.find((d) => d.key === location) || {}).label || 'your destination'
+  const citiesText = cities.length ? cities.slice(0, 3).join(', ') : destLabel
 
   // Stay tier — pick the priciest chosen stay type.
   const stayTier = stays.some((s) => ['Resorts', 'Villas', 'Boutique stays'].includes(s)) ? 7000
@@ -339,7 +340,7 @@ export function estimateBudget(answers) {
     parts: [
       {
         label: 'Flights · return', amount: flights, kind: 'flights',
-        sub: `Return economy to ${destLabel}`,
+        sub: `Usual return fares to ${destLabel} for your dates`,
         why: `Return economy airfare to ${destLabel}, based on typical prices for your travel window. Booking earlier usually brings this down.`,
         detail: {
           trend: [
@@ -353,7 +354,7 @@ export function estimateBudget(answers) {
       },
       {
         label: `Stays · ${nights} nights`, amount: stayTotal, kind: 'stays',
-        sub: stays.length ? stays.join(', ') : 'Hotels',
+        sub: `${stays.length ? stays.join(', ') : 'Hotels'} across ${citiesText}, ${nights} nights`,
         why: `Estimated from your preferred stay type${stays.length ? ` (${stays.join(', ').toLowerCase()})` : ''} across ${nights} nights. Resorts and villas sit higher; hostels and homestays lower.`,
         detail: { bullets: [
           `About ${fmtINR(stayTier)} a night × ${nights} nights`,
@@ -363,7 +364,7 @@ export function estimateBudget(answers) {
       },
       {
         label: 'Food & dining', amount: foodTotal, kind: 'food',
-        sub: `≈ ${fmtINR(foodPerDay)} a day`,
+        sub: `Daily meals for ${wholeDays} days across ${citiesText}`,
         why: `A daily food allowance of about ${fmtINR(foodPerDay)}/day — a mix of local spots and street eats, with room for a few nicer meals.`,
         detail: { bullets: [
           `≈ ${fmtINR(foodPerDay)} a day × ${wholeDays} days`,
@@ -373,7 +374,7 @@ export function estimateBudget(answers) {
       },
       {
         label: 'Activities & entries', amount: actTotal, kind: 'activities',
-        sub: `≈ ${fmtINR(activitiesPerDay)} a day`,
+        sub: `The major things to do across ${citiesText}`,
         why: `Entry fees, tours and experiences budgeted at roughly ${fmtINR(activitiesPerDay)}/day, matched to your ${tripType ? tripType.toLowerCase() : 'trip'} pace.`,
         detail: { bullets: [
           `≈ ${fmtINR(activitiesPerDay)} a day of entries & experiences`,
@@ -383,7 +384,7 @@ export function estimateBudget(answers) {
       },
       {
         label: 'Local transfers', amount: transferTotal, kind: 'transfers',
-        sub: transport === 'Private' ? 'Private cabs' : 'Mostly public transport',
+        sub: `${transport === 'Private' ? 'Private cabs' : 'Public transport'} around ${citiesText} + airport`,
         why: transport === 'Private'
           ? 'Private cabs and airport transfers for door-to-door convenience — the pricier but easiest way to get around.'
           : 'Mostly public transport (metro, buses, trains) with the occasional cab — the economical way to get around.',
