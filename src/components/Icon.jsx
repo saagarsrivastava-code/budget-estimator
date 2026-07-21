@@ -16,6 +16,7 @@ const PATHS = {
   star: <path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z" />,
   warning: <><path d="M12 4l9 16H3z" /><path d="M12 10v4M12 17v.5" /></>,
   sparkle: <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" />,
+  utensils: <><path d="M7 3v18M4.5 3v4.5a2.5 2.5 0 005 0V3" /><path d="M16.5 3c-1.4 0-2.5 2.2-2.5 5s1.1 3.5 2.5 3.5V21" /></>,
   info: <><circle cx="12" cy="12" r="8.5" /><path d="M12 11.5v4.5" /><circle cx="12" cy="8" r="0.7" fill="currentColor" stroke="none" /></>,
   pin: <><path d="M12 21s7-5.5 7-11a7 7 0 10-14 0c0 5.5 7 11 7 11z" /><circle cx="12" cy="10" r="2.4" /></>,
   route: <><circle cx="6" cy="6" r="2.2" /><circle cx="18" cy="18" r="2.2" /><path d="M6 8.2v4.3a3.5 3.5 0 003.5 3.5H14M18 15.8V12" /></>,

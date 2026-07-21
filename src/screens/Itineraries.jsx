@@ -102,6 +102,7 @@ export default function Itineraries() {
               style={{ animationDelay: `${0.05 + i * 0.05}s` }}
               onClick={() => setWhy(p)}
             >
+              <span className="costcard__icn"><Icon name={p.icon || 'wallet'} size={20} /></span>
               <div className="costcard__main">
                 <span className="costcard__label">{p.label}<Icon name="info" size={15} /></span>
                 {p.sub && <span className="costcard__sub">{p.sub}</span>}
@@ -125,7 +126,7 @@ export default function Itineraries() {
                 <div className="t-lb-sm muted">{why.label}</div>
                 <div className="t-hd-med" style={{ marginTop: 2 }}>{fmtINR(why.amount)} <span className="t-p-small muted" style={{ fontWeight: 400 }}>/ person</span></div>
               </div>
-              <span className="whysheet__icn"><Icon name="wallet" size={20} /></span>
+              <span className="whysheet__icn"><Icon name={why.icon || 'wallet'} size={20} /></span>
             </div>
 
             <p className="t-p-med" style={{ marginTop: 14, color: 'var(--content-secondary)' }}>{why.why}</p>

@@ -883,7 +883,12 @@
   background: var(--bg-primary); box-shadow: var(--shadow-card); transition: transform 0.12s;
 }
 .costcard:active { transform: scale(0.99); }
-.costcard__main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.costcard__icn {
+  flex-shrink: 0; width: 40px; height: 40px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--primary-scapia-000); color: var(--brand-primary); border: 1px solid var(--primary-scapia-100);
+}
+.costcard__main { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
 .costcard__label {
   display: inline-flex; align-items: center; gap: 7px;
   font-size: 14px; font-weight: 600; color: var(--content-primary);

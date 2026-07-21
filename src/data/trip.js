@@ -339,7 +339,7 @@ export function estimateBudget(answers) {
     days,
     parts: [
       {
-        label: 'Flights · return', amount: flights, kind: 'flights',
+        label: 'Flights · return', amount: flights, kind: 'flights', icon: 'plane',
         sub: `Usual return fares to ${destLabel} for your dates`,
         why: `Return economy airfare to ${destLabel}, based on typical prices for your travel window. Booking earlier usually brings this down.`,
         detail: {
@@ -353,7 +353,7 @@ export function estimateBudget(answers) {
         },
       },
       {
-        label: `Stays · ${nights} nights`, amount: stayTotal, kind: 'stays',
+        label: `Stays · ${nights} nights`, amount: stayTotal, kind: 'stays', icon: 'home',
         sub: `${stays.length ? stays.join(', ') : 'Hotels'} across ${citiesText}, ${nights} nights`,
         why: `Estimated from your preferred stay type${stays.length ? ` (${stays.join(', ').toLowerCase()})` : ''} across ${nights} nights. Resorts and villas sit higher; hostels and homestays lower.`,
         detail: { bullets: [
@@ -363,7 +363,7 @@ export function estimateBudget(answers) {
         ] },
       },
       {
-        label: 'Food & dining', amount: foodTotal, kind: 'food',
+        label: 'Food & dining', amount: foodTotal, kind: 'food', icon: 'utensils',
         sub: `Daily meals for ${wholeDays} days across ${citiesText}`,
         why: `A daily food allowance of about ${fmtINR(foodPerDay)}/day — a mix of local spots and street eats, with room for a few nicer meals.`,
         detail: { bullets: [
@@ -373,7 +373,7 @@ export function estimateBudget(answers) {
         ] },
       },
       {
-        label: 'Activities & entries', amount: actTotal, kind: 'activities',
+        label: 'Activities & entries', amount: actTotal, kind: 'activities', icon: 'compass',
         sub: `The major things to do across ${citiesText}`,
         why: `Entry fees, tours and experiences budgeted at roughly ${fmtINR(activitiesPerDay)}/day, matched to your ${tripType ? tripType.toLowerCase() : 'trip'} pace.`,
         detail: { bullets: [
@@ -383,7 +383,7 @@ export function estimateBudget(answers) {
         ] },
       },
       {
-        label: 'Local transfers', amount: transferTotal, kind: 'transfers',
+        label: 'Local transfers', amount: transferTotal, kind: 'transfers', icon: 'car',
         sub: `${transport === 'Private' ? 'Private cabs' : 'Public transport'} around ${citiesText} + airport`,
         why: transport === 'Private'
           ? 'Private cabs and airport transfers for door-to-door convenience — the pricier but easiest way to get around.'
