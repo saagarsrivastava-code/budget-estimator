@@ -1047,11 +1047,7 @@
 .varcard__edit:active { transform: scale(0.98); }
 
 /* ── Landing — preview of the output (budget widget + plan cards) ─ */
-.lp-preview {
-  border-radius: var(--r-xl); padding: 14px;
-  background: linear-gradient(165deg, var(--primary-scapia-000), var(--bg-secondary) 90%);
-  border: 1px solid var(--border-opaque);
-}
+.lp-preview { /* plain wrapper — shows the results-page cards directly */ }
 .lp-budget {
   padding: 14px 16px; border-radius: var(--r-lg);
   background: var(--bg-primary); box-shadow: var(--shadow-card); border: 1px solid var(--border-opaque);

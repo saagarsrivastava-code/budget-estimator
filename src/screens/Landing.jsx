@@ -3,12 +3,11 @@ import { Screen } from '../components/Chrome.jsx'
 import { Button } from '../components/ui.jsx'
 import Icon from '../components/Icon.jsx'
 
-const IMG = (id) => `https://images.unsplash.com/photo-${id}?w=400&q=80&auto=format&fit=crop`
-
-// Mini plan cards previewed under the budget widget.
-const PREVIEW_CARDS = [
-  { title: 'The Classics', sub: 'Popular · balanced', accent: 'var(--brand-primary)', img: IMG('1528181304800-259b08848526') },
-  { title: 'Offbeat & Hidden', sub: 'Local gems', accent: 'var(--secondary-blue-500)', img: IMG('1507525428034-b723cf961d3e') },
+// Preview of the results-page breakdown cards.
+const PREVIEW_COSTS = [
+  { icon: 'plane', label: 'Flights · return', sub: 'Return economy to Thailand', amount: '₹22,000' },
+  { icon: 'home', label: 'Stays · 5 nights', sub: 'Beachfront resorts', amount: '₹35,000' },
+  { icon: 'compass', label: 'Activities & entries', sub: 'The major things to do', amount: '₹13,750' },
 ]
 
 export default function Landing() {
@@ -41,28 +40,22 @@ export default function Landing() {
 
         <div className="spacer" style={{ minHeight: 16 }} />
 
-        {/* Hero — a preview of what you get: a budget estimate + plan cards */}
+        {/* Hero — a preview of the results page: estimate card + breakdown cards */}
         <div className="lp-preview rise" style={{ animationDelay: '0.22s' }}>
-          <div className="lp-budget">
-            <div className="lp-budget__label">Estimated budget</div>
-            <div className="lp-budget__range">₹70,000 <span>–</span> ₹89,000</div>
-            <div className="lp-budget__rows">
-              <div><span>Flights · return</span><span>₹22,000</span></div>
-              <div><span>Stays · 5 nights</span><span>₹22,500</span></div>
-              <div><span>Activities & more</span><span>₹17,600</span></div>
-            </div>
+          <div className="budget budget--main">
+            <div className="budget__label">Estimated budget · per person</div>
+            <div className="budget__range">₹83,000 <span>–</span> ₹1,07,000</div>
           </div>
 
-          <div className="lp-cardrow">
-            {PREVIEW_CARDS.map((c) => (
-              <div key={c.title} className="lp-card">
-                <div
-                  className="lp-card__img"
-                  style={{ backgroundColor: c.accent, backgroundImage: `url(${c.img})` }}
-                >
-                  <span className="lp-card__pill">{c.sub}</span>
+          <div className="stack-8" style={{ marginTop: 12 }}>
+            {PREVIEW_COSTS.map((c) => (
+              <div key={c.label} className="costcard">
+                <span className="costcard__icn"><Icon name={c.icon} size={20} /></span>
+                <div className="costcard__main">
+                  <span className="costcard__label">{c.label}</span>
+                  <span className="costcard__sub">{c.sub}</span>
                 </div>
-                <div className="lp-card__title">{c.title}</div>
+                <span className="costcard__amt">{c.amount}</span>
               </div>
             ))}
           </div>
