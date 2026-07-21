@@ -63,22 +63,30 @@ export default function Itineraries() {
           ].filter(Boolean).join(' · ')}
         </div>
 
-        {/* Estimated budget — each line taps to reveal why it's priced that way */}
-        <div className="budget rise">
+        {/* Main card — the overall estimate */}
+        <div className="budget budget--main rise">
           <div className="budget__label">Estimated budget · per person</div>
           <div className="budget__range">{fmtINR(budget.low)} <span>–</span> {fmtINR(budget.high)}</div>
-          <div className="budget__parts">
-            {budget.parts.map((p) => (
-              <button key={p.label} className="budget__part budget__part--btn" onClick={() => setWhy(p)}>
-                <span className="budget__partlabel">{p.label}<Icon name="info" size={14} /></span>
-                <span className="t-p-small" style={{ fontWeight: 600 }}>{fmtINR(p.amount)}</span>
-              </button>
-            ))}
-          </div>
           <div className="budget__note">
             <Icon name="sparkle" size={14} />
-            A ballpark from your choices — tap any line to see how it's priced.
+            A ballpark from your choices — tap any card to see how it's priced.
           </div>
+        </div>
+
+        {/* Each line item as its own card */}
+        <div className="section-label" style={{ marginTop: 22 }}>The breakdown</div>
+        <div className="stack-10">
+          {budget.parts.map((p, i) => (
+            <button
+              key={p.label}
+              className="costcard rise"
+              style={{ animationDelay: `${0.05 + i * 0.05}s` }}
+              onClick={() => setWhy(p)}
+            >
+              <span className="costcard__label">{p.label}<Icon name="info" size={15} /></span>
+              <span className="costcard__amt">{fmtINR(p.amount)}</span>
+            </button>
+          ))}
         </div>
       </div>
 
